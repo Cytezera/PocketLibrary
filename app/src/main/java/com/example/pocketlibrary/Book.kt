@@ -11,4 +11,4 @@ data class Book(
     val desc: String,
     val categories: List<String>,
     val imageId : Int
-)
+) : Parcelable

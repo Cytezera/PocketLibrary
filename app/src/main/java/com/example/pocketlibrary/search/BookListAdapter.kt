@@ -4,12 +4,15 @@ package com.example.pocketlibrary.search
 
 import android.content.Context
 import android.view.LayoutInflater
+import com.example.pocketlibrary.Book
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import android.content.Intent
+import com.example.pocketlibrary.R
+
 
 class BookLongAdapter(
     private var books : List<Book>,
@@ -24,7 +27,7 @@ class BookLongAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_long_book, parent, false)
+            .inflate(R.layout.item_book, parent, false)
         return BookViewHolder(view)
     }
 
@@ -37,9 +40,7 @@ class BookLongAdapter(
         holder.bookDesc.text = book.desc
 
         holder.itemView.setOnClickListener{
-            val intent = Intent(context, BookDetailsActivity::class.java)
-            intent.putExtra("book_details", book)
-            context.startActivity(intent)
+      // Shove whatever fragment transaction here
         }
     }
 
