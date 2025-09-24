@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".home.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultsRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="homet" />
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </FrameLayout>

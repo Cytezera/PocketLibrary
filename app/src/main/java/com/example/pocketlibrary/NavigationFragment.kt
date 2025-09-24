@@ -3,10 +3,14 @@ package com.example.pocketlibrary
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.widget.Button
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.example.pocketlibrary.create.CreateFragment
+import com.example.pocketlibrary.discovery.DiscoveryFragment
+import com.example.pocketlibrary.home.HomeFragment
+import com.example.pocketlibrary.library.LibraryFragment
+import com.example.pocketlibrary.search.SearchFragment
 
 
 // TODO: Rename parameter arguments, choose names that match

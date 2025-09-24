@@ -3,8 +3,7 @@ package com.example.pocketlibrary
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.pocketlibrary.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +13,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.nav_container, NavigationFragment())
+                .replace(R.id.main_container, HomeFragment())
                 .commit()
         }
     }
