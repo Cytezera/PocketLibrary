@@ -1,14 +1,19 @@
+//Book Class
+
 package com.example.pocketlibrary
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
 data class Book(
-    val id: Int,
+    val key : String,
     val title: String,
-    val author: String,
-    val desc: String,
-    val categories: List<String>,
-    val imageId : Int
-) : Parcelable
+    val author: List<String>,
+    val coverId : Int,
+    val publishYear : Int?
+):Parcelable
+
+

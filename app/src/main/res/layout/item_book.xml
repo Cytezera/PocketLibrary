@@ -5,7 +5,6 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <!-- Book Cover -->
     <ImageView
         android:id="@+id/bookImage"
         android:layout_width="100dp"
@@ -14,7 +13,6 @@
         android:contentDescription="Book cover"
         android:src="@drawable/ic_launcher_foreground" />
 
-    <!-- Text container -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +31,7 @@
             android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/textDesc"
+            android:id="@+id/textAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Book description"

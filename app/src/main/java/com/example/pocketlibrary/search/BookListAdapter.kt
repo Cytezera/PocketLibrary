@@ -11,18 +11,19 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import android.content.Intent
+import android.os.Parcelable
 import com.example.pocketlibrary.R
 
 
-class BookLongAdapter(
+class BookListAdapter(
     private var books : List<Book>,
     private val context : Context
-): RecyclerView.Adapter<BookLongAdapter.BookViewHolder>(){
+): RecyclerView.Adapter<BookListAdapter.BookViewHolder>(){
     class BookViewHolder(view:View) : RecyclerView.ViewHolder(view){
         val textTitle : TextView = view.findViewById(R.id.textTitle)
         val bookImage : ImageView = view.findViewById(R.id.bookImage)
 
-        val bookDesc : TextView = view.findViewById(R.id.textDesc)
+        val bookAuthor : TextView = view.findViewById(R.id.textAuthor)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -33,11 +34,14 @@ class BookLongAdapter(
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
 
+
         val book = books[position]
 
         holder.textTitle.text = book.title
-        holder.bookImage.setImageResource(book.imageId)
-        holder.bookDesc.text = book.desc
+
+
+       // holder.bookImage.setImageResource(book.)
+        holder.bookAuthor.text = book.author.joinToString(", ")
 
         holder.itemView.setOnClickListener{
       // Shove whatever fragment transaction here
@@ -45,7 +49,7 @@ class BookLongAdapter(
     }
 
     override fun getItemCount(): Int = books.size
-    fun updateData(newList: List<Book>){
+    fun updateList(newList: List<Book>){
         books = newList
         notifyDataSetChanged()
     }
