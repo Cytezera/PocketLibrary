@@ -1,59 +1,108 @@
 package com.example.pocketlibrary
 
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.pocketlibrary.internalDatabase.BookDAO
+import com.example.pocketlibrary.internalDatabase.AppDatabase
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [BookToolbarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class BookToolbarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var book: Book? = null
+
+    private lateinit var db: AppDatabase
+
+    private lateinit var bookDao: BookDAO
+    companion object {
+        private const val ARG_BOOK = "arg_book"
+
+        fun newInstance(book: Book): BookToolbarFragment {
+            val fragment = BookToolbarFragment()
+            val args = Bundle()
+            args.putParcelable(ARG_BOOK, book)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        book = arguments?.getParcelable<Book>(ARG_BOOK)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_book_toolbar, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BookToolbarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BookToolbarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view,savedInstanceState)
+
+        val btnBack = view.findViewById<ImageView>(R.id.btnBack)
+        val btnSave = view.findViewById<ImageView>(R.id.btnSave)
+        val btnShare = view.findViewById<ImageView>(R.id.btnShare)
+        db = AppDatabase.getDatabase(requireContext())
+        bookDao = db.bookDao()
+        btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        book?.let { currentBook ->
+            lifecycleScope.launch {
+                val saved = bookDao.isBookSaved(currentBook.key) > 0
+                if (saved) {
+                    btnSave.setImageResource(R.drawable.ic_saved) // change to saved icon
+                } else {
+                    btnSave.setImageResource(R.drawable.ic_save) // default save icon
                 }
             }
+        }
+        btnSave.setOnClickListener {
+            book?.let { currentBook ->
+                lifecycleScope.launch {
+                    val saved = bookDao.isBookSaved(currentBook.key) > 0
+                    if (!saved) {
+                        bookDao.insert(currentBook)
+                        btnSave.setImageResource(R.drawable.ic_saved)
+                        Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Book already saved", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+
+        btnShare.setOnClickListener {
+            book?.let { currentBook ->
+                val shareIntent = android.content.Intent().apply {
+                    action = android.content.Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(
+                        android.content.Intent.EXTRA_TEXT,
+                        "Look at my book: ${currentBook.title}"
+                    )
+                }
+                startActivity(
+                    android.content.Intent.createChooser(
+                        shareIntent,
+                        "Share using:"
+                    )
+                )
+            }
+        }
     }
-}
+
+
+    }

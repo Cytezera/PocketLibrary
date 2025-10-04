@@ -18,4 +18,9 @@ interface BookDAO {
     @Query("SELECT * FROM books")
     suspend fun getAllBooks(): List<Book>
 
+    @Query("SELECT COUNT(*) FROM books WHERE book_key = :bookId")
+    suspend fun isBookSaved(bookId: String): Int
+
+
+
 }

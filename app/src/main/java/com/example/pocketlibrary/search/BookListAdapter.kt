@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.pocketlibrary.R
 import androidx.fragment.app.FragmentManager
 import com.example.pocketlibrary.BookFragment
-
+import com.example.pocketlibrary.BookToolbarFragment
 
 
 class BookListAdapter(
@@ -58,7 +58,12 @@ class BookListAdapter(
 
         holder.itemView.setOnClickListener{
             val fragment = BookFragment.newInstance(book)
+            val fragment2 = BookToolbarFragment.newInstance(book)
+
+
             fragmentManager.beginTransaction()
+                .replace(R.id.searchBar_container, fragment2)
+
                 .replace(R.id.bookList_container, fragment)
                 .addToBackStack(null)
                 .commit()
