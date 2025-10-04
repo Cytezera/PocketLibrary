@@ -11,13 +11,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import android.content.Intent
-import android.os.Parcelable
+import com.bumptech.glide.Glide
 import com.example.pocketlibrary.R
+import androidx.fragment.app.FragmentManager
+import com.example.pocketlibrary.BookFragment
+
 
 
 class BookListAdapter(
     private var books : List<Book>,
-    private val context : Context
+    private val context : Context,
+    private val fragmentManager: FragmentManager
 ): RecyclerView.Adapter<BookListAdapter.BookViewHolder>(){
     class BookViewHolder(view:View) : RecyclerView.ViewHolder(view){
         val textTitle : TextView = view.findViewById(R.id.textTitle)
@@ -39,12 +43,26 @@ class BookListAdapter(
 
         holder.textTitle.text = book.title
 
+        book.coverId?.let{ coverId ->
+            val coverUrl = "https://covers.openlibrary.org/b/id/$coverId-M.jpg"
+            Glide.with(context)
+                .load(coverUrl)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_foreground)
+                .into(holder.bookImage)
 
-       // holder.bookImage.setImageResource(book.)
+        }
+
+
         holder.bookAuthor.text = book.author.joinToString(", ")
 
         holder.itemView.setOnClickListener{
-      // Shove whatever fragment transaction here
+            val fragment = BookFragment.newInstance(book)
+            fragmentManager.beginTransaction()
+                .replace(R.id.bookList_container, fragment)
+                .addToBackStack(null)
+                .commit()
+
         }
     }
 
