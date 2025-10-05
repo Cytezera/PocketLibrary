@@ -1,17 +1,18 @@
 package com.example.pocketlibrary
 
+
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.example.pocketlibrary.internalDatabase.BookDAO
 import com.example.pocketlibrary.internalDatabase.AppDatabase
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-
 
 
 class BookToolbarFragment : Fragment() {
@@ -20,6 +21,7 @@ class BookToolbarFragment : Fragment() {
 
     private lateinit var db: AppDatabase
 
+    // private lateinit var firebaseSyncManager: FirebaseSyncManager
     private lateinit var bookDao: BookDAO
     companion object {
         private const val ARG_BOOK = "arg_book"
@@ -76,11 +78,21 @@ class BookToolbarFragment : Fragment() {
                         bookDao.insert(currentBook)
                         btnSave.setImageResource(R.drawable.ic_saved)
                         Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()
+
+                        //firebaseSyncManager.uploadBook(currentBook) ADD WHATEVER SYNTAX FOR FIREBASE
+
+
                     } else {
-                        Toast.makeText(requireContext(), "Book already saved", Toast.LENGTH_SHORT).show()
+                        bookDao.delete(currentBook)
+                        btnSave.setImageResource(R.drawable.ic_save)
+                        Toast.makeText(requireContext(), "Book unsaved", Toast.LENGTH_SHORT).show()
                     }
                 }
+
+
             }
+
+
         }
 
 

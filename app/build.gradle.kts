@@ -31,6 +31,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -42,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.storage)
     val lifecycle_version = "2.9.2"
     implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
@@ -65,9 +67,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 
+    //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
 
 
     implementation(libs.androidx.core.ktx)
