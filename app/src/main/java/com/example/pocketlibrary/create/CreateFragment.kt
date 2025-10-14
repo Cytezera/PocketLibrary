@@ -15,9 +15,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.pocketlibrary.Book
 import com.example.pocketlibrary.R
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.example.pocketlibrary.internalDatabase.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CreateFragment : Fragment() {
@@ -64,42 +67,32 @@ class CreateFragment : Fragment() {
 
     private fun saveBook() {
         val title = etTitle.text.toString().trim()
-        val author = etAuthor.text.toString().trim()
-        val year = etYear.text.toString().trim()
+        val authorInput = etAuthor.text.toString().trim()
+        val yearInput = etYear.text.toString().trim()
 
-        if (title.isEmpty() || author.isEmpty() || year.isEmpty()) {
+        if (title.isEmpty() || authorInput.isEmpty() || yearInput.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val id = UUID.randomUUID().toString()
-        val firestore = FirebaseFirestore.getInstance()
-        val storage = FirebaseStorage.getInstance()
+        val key = UUID.randomUUID().toString()
+        val authorList = listOf(authorInput)
+        val publishYear = yearInput.toIntOrNull()
+        val coverId = if (photoUri != null) {
+            R.drawable.ic_placeholder
+        } else 0
 
-        if (photoUri != null) {
-            val ref = storage.reference.child("covers/$id.jpg")
-            ref.putFile(photoUri!!)
-                .addOnSuccessListener {
-                    ref.downloadUrl.addOnSuccessListener { url ->
-                        val book = mapOf(
-                            "id" to id,
-                            "title" to title,
-                            "author" to author,
-                            "year" to year,
-                            "coverUrl" to url.toString()
-                        )
-                        firestore.collection("books").document(id).set(book)
-                    }
-                }
-        } else {
-            val book = mapOf(
-                "id" to id,
-                "title" to title,
-                "author" to author,
-                "year" to year,
-                "coverUrl" to null
-            )
-            firestore.collection("books").document(id).set(book)
+        val book = Book(
+            key = key,
+            title = title,
+            author = authorList,
+            coverId = coverId,
+            publishYear = publishYear
+        )
+
+        val db = AppDatabase.getDatabase(requireContext())
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.bookDao().insert(book)
         }
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
