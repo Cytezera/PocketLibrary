@@ -22,6 +22,6 @@ interface BookDAO {
     @Query("SELECT COUNT(*) FROM books WHERE book_key = :bookId")
     suspend fun isBookSaved(bookId: String): Int
 
-    @Query("SELECT * FROM books WHERE book_title LIKE '%' || :query || '%' OR book_author LIKE '%' || :query || '%' ORDER BY book_title ASC")
+    @Query("SELECT * FROM books WHERE LOWER(book_title) LIKE '%' || LOWER(:query) || '%' OR LOWER(book_author) LIKE '%' || LOWER(:query) || '%' ORDER BY book_title ASC")
     fun searchBooks(query: String): LiveData<List<Book>>
 }

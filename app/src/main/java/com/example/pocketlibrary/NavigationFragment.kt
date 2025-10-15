@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.example.pocketlibrary.create.CreateFragment
 import com.example.pocketlibrary.discovery.DiscoveryFragment
 import com.example.pocketlibrary.home.HomeFragment
+import com.example.pocketlibrary.library.LibraryContainerFragment
 import com.example.pocketlibrary.library.LibraryFragment
 import com.example.pocketlibrary.search.SearchFragment
 
@@ -70,7 +71,7 @@ class NavigationFragment : Fragment() {
         }
         library.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_container, LibraryFragment())
+                .replace(R.id.main_container, LibraryContainerFragment())
                 .commit()
         }
         create.setOnClickListener {

@@ -8,15 +8,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.rememberUpdatedState
 import com.example.pocketlibrary.R
 import com.example.pocketlibrary.Book
 import com.bumptech.glide.Glide
 import com.example.pocketlibrary.BookFragment
+import com.example.pocketlibrary.BookToolbarFragment
 
 class SavedBookAdapter (
     private var books: List<Book>,
     private val context: Context,
-    private val fragmentManager: FragmentManager
 ): RecyclerView.Adapter<SavedBookAdapter.BookViewHolder>() {
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -48,8 +50,13 @@ class SavedBookAdapter (
             //to make the book clickable
             holder.itemView.setOnClickListener {
                 val fragment = BookFragment.newInstance(book)
-                fragmentManager.beginTransaction()
-                    .replace(R.id.main_container, fragment)
+                val toolbarFragment = BookToolbarFragment.newInstance(book)
+
+                val activity = context as? AppCompatActivity ?: return@setOnClickListener
+
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.category_container, fragment)
+                    .replace(R.id.toolbar_container, toolbarFragment)
                     .addToBackStack(null)
                     .commit()
             }

@@ -24,6 +24,4 @@ class SearchFragment : Fragment() {
             .replace(R.id.bookList_container, BookListFragment())
             .commit()
     }
-
-
 }

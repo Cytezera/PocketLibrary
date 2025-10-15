@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.pocketlibrary.BookFragment
+import com.example.pocketlibrary.BookToolbarFragment
 import com.example.pocketlibrary.R
 
 class LibraryFragment : Fragment() {
@@ -22,14 +24,14 @@ class LibraryFragment : Fragment() {
         //change to SavedBookFragment
         favouriteButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_container, SavedBookFragment())
+                .replace(R.id.category_container, SavedBookFragment())
                 .addToBackStack(null)
                 .commit()
         }
 
         localStorageButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_container, SavedBookFragment())
+                .replace(R.id.category_container, SavedBookFragment())
                 .addToBackStack(null)
                 .commit()
         }

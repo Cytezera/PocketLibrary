@@ -15,7 +15,8 @@
         android:padding="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        android:background="#E6CFA8">
 
         <ImageView
             android:id="@+id/bookImage"
