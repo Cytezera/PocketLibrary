@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FAF3E0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,13 +50,17 @@
             android:layout_height="wrap_content"
             android:text="Take Photo"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#8B4513"
+            android:textColor="#FAF3E0" />
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Book" />
+            android:text="Save Book"
+            android:textColor="#5C4033"
+            android:backgroundTint="#D2B48C" />
 
     </LinearLayout>
 </ScrollView>
