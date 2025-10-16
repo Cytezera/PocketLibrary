@@ -1,11 +1,7 @@
 package com.example.pocketlibrary.create
 
-import android.content.ContentValues
-import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.pocketlibrary.Book
@@ -21,6 +18,7 @@ import com.example.pocketlibrary.R
 import com.example.pocketlibrary.internalDatabase.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 class CreateFragment : Fragment() {
@@ -36,11 +34,10 @@ class CreateFragment : Fragment() {
 
     // Camera
     private val takePhotoLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bitmap: Bitmap? ->
-        if (bitmap != null) {
-            imgCover.setImageBitmap(bitmap)
-            photoUri = saveImageToGallery(requireContext(), bitmap)
+        ActivityResultContracts.TakePicture()
+    ) { success: Boolean ->
+        if (success && photoUri != null) {
+            imgCover.setImageURI(photoUri)
         } else {
             Toast.makeText(requireContext(), "No photo captured", Toast.LENGTH_SHORT).show()
         }
@@ -59,10 +56,36 @@ class CreateFragment : Fragment() {
         btnCamera = view.findViewById(R.id.btnCamera)
         btnSave = view.findViewById(R.id.btnSave)
 
-        btnCamera.setOnClickListener { takePhotoLauncher.launch(null) }
+        btnCamera.setOnClickListener {
+            requestCameraPermission.launch(android.Manifest.permission.CAMERA)
+        }
         btnSave.setOnClickListener { saveBook() }
 
         return view
+    }
+
+    private val requestCameraPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) openRealCamera()
+            else Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show()
+        }
+
+    private fun openRealCamera() {
+        val context = requireContext()
+        val imageFile = File(context.filesDir, "images")
+        if (!imageFile.exists()) {
+            imageFile.mkdirs()
+        }
+
+        val fileName = "cover_${System.currentTimeMillis()}.jpg"
+        val photoFile = File(imageFile, fileName)
+        photoUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            photoFile
+        )
+
+        takePhotoLauncher.launch(photoUri)
     }
 
     private fun saveBook() {
@@ -99,26 +122,25 @@ class CreateFragment : Fragment() {
         clearForm()
     }
 
-    private fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, "cover_${System.currentTimeMillis()}.jpg")
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        }
-        val resolver = context.contentResolver
-        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        uri?.let {
-            resolver.openOutputStream(it)?.use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            }
-        }
-        return uri
-    }
-
     private fun clearForm() {
         etTitle.text.clear()
         etAuthor.text.clear()
         etYear.text.clear()
         imgCover.setImageResource(R.drawable.ic_placeholder)
         photoUri = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("photoUri", photoUri?.toString())
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        val savedUri = savedInstanceState?.getString("photoUri")
+        if (savedUri != null) {
+            photoUri = Uri.parse(savedUri)
+            imgCover.setImageURI(photoUri)
+        }
     }
 }
