@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_body_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FAF3E0"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textRecent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recently Saved"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="0dp"
+        android:textColor="#5C4033"
+        android:contentDescription="Recently saved section" />
+
+    <TextView
+        android:id="@+id/textEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No saved books yet. Add one or search to get started."
+        android:layout_marginTop="8dp"
+        android:textColor="#8B4513"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerRecent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:contentDescription="Recently saved books" />
+
+</LinearLayout>
