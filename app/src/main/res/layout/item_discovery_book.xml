@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardUseCompatPadding="true">
+    app:cardUseCompatPadding="true"
+    android:background="#FAF3E0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +15,8 @@
         android:padding="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        android:background="#E6CFA8">
 
         <ImageView
             android:id="@+id/bookImage"
