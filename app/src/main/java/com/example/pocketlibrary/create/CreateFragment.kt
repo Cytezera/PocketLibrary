@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
+import com.example.pocketlibrary.internalDatabase.SyncManager
 
 class CreateFragment : Fragment() {
 
@@ -116,6 +117,7 @@ class CreateFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         lifecycleScope.launch(Dispatchers.IO) {
             db.bookDao().insert(book)
+            SyncManager.addBookToFirebase(book)
         }
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()

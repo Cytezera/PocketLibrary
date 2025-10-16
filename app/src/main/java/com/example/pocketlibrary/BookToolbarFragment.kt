@@ -13,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.pocketlibrary.internalDatabase.BookDAO
 import com.example.pocketlibrary.internalDatabase.AppDatabase
 import kotlinx.coroutines.launch
+import com.example.pocketlibrary.internalDatabase.SyncManager
+
 
 
 class BookToolbarFragment : Fragment() {
@@ -75,25 +77,24 @@ class BookToolbarFragment : Fragment() {
                 lifecycleScope.launch {
                     val saved = bookDao.isBookSaved(currentBook.key) > 0
                     if (!saved) {
+                        // Add locally
                         bookDao.insert(currentBook)
                         btnSave.setImageResource(R.drawable.ic_saved)
                         Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()
 
-                        //firebaseSyncManager.uploadBook(currentBook) ADD WHATEVER SYNTAX FOR FIREBASE
-
+                        SyncManager.addBookToFirebase(currentBook)
 
                     } else {
                         bookDao.delete(currentBook)
                         btnSave.setImageResource(R.drawable.ic_save)
                         Toast.makeText(requireContext(), "Book unsaved", Toast.LENGTH_SHORT).show()
+
+                        SyncManager.removeBookFromFirebase(currentBook.key)
                     }
                 }
-
-
             }
-
-
         }
+
 
 
         btnShare.setOnClickListener {

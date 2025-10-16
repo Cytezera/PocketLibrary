@@ -7,6 +7,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.0.21-1.0.25"
 
 
+
 }
 
 android {
@@ -47,6 +48,7 @@ android {
 
 dependencies {
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.firestore)
     val lifecycle_version = "2.9.2"
     implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
@@ -71,14 +73,17 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 
     //firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
+
+// real firebase
+    implementation("com.google.firebase:firebase-firestore:26.0.2")
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
