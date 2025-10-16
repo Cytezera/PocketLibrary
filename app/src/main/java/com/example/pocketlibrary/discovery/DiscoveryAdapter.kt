@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pocketlibrary.Book
+import com.example.pocketlibrary.BookFragment
+import com.example.pocketlibrary.BookToolbarFragment
 import com.example.pocketlibrary.R
 
-class BookListAdapter(
+class DiscoveryAdapter(
     private var books: List<Book>,
     private val context: Context,
     private val onBookClick: (Book) -> Unit
-) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
+) : RecyclerView.Adapter<DiscoveryAdapter.BookViewHolder>() {
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textTitle: TextView = view.findViewById(R.id.textTitle)
@@ -33,13 +36,15 @@ class BookListAdapter(
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book = books[position]
 
-
         holder.textTitle.text = book.title
 
+        val authors = book.author.joinToString(", ")
+        val year = book.publishYear?.toString() ?: "-"
+        holder.bookAuthor.text = "$authors • $year"
 
         if (book.coverId > 0) {
             val coverUrl = "https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg"
-            Glide.with(context)
+            Glide.with(holder.bookImage.context)
                 .load(coverUrl)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .error(R.drawable.ic_launcher_foreground)
@@ -47,14 +52,8 @@ class BookListAdapter(
         } else {
             holder.bookImage.setImageResource(R.drawable.ic_launcher_foreground)
         }
+
         holder.bookImage.contentDescription = "${book.title} cover"
-
-
-        val authors = book.author.joinToString(", ")
-        val year = book.publishYear?.toString() ?: "-"
-        holder.bookAuthor.text = "$authors • $year"
-
-
         holder.itemView.setOnClickListener { onBookClick(book) }
     }
 
