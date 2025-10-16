@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pocketlibrary.R
@@ -23,7 +24,7 @@ class HomeFragment : Fragment() {
     private var _b: FragmentHomeBinding? = null
     private val b get() = _b!!
 
-    private val savedVm: SavedBookViewModel by viewModels()
+    private val savedVm: SavedBookViewModel by activityViewModels()
     private lateinit var adapter: SavedBookAdapter
     private var listState: Parcelable? = null
 
@@ -69,7 +70,7 @@ class HomeFragment : Fragment() {
 
         adapter = SavedBookAdapter(emptyList(), requireContext())
         b.recyclerRecent.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         b.recyclerRecent.adapter = adapter
         b.recyclerRecent.setHasFixedSize(true)
 

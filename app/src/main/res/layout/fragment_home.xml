@@ -16,6 +16,7 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#5C4033"
+        android:textAlignment="center"
         android:contentDescription="App title" />
 
     <TextView

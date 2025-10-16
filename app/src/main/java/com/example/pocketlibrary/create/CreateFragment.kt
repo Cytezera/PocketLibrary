@@ -22,6 +22,8 @@ import com.example.pocketlibrary.internalDatabase.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import androidx.fragment.app.activityViewModels
+import com.example.pocketlibrary.library.SavedBookViewModel
 
 class CreateFragment : Fragment() {
 
@@ -31,7 +33,7 @@ class CreateFragment : Fragment() {
     private lateinit var imgCover: ImageView
     private lateinit var btnCamera: Button
     private lateinit var btnSave: Button
-
+    private val savedVm: SavedBookViewModel by activityViewModels()
     private var photoUri: Uri? = null
 
     // Camera
@@ -90,10 +92,11 @@ class CreateFragment : Fragment() {
             publishYear = publishYear
         )
 
-        val db = AppDatabase.getDatabase(requireContext())
+        savedVm.insert(book)
+        /*val db = AppDatabase.getDatabase(requireContext())
         lifecycleScope.launch(Dispatchers.IO) {
             db.bookDao().insert(book)
-        }
+        }*/
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
         clearForm()
