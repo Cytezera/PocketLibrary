@@ -111,7 +111,8 @@ class CreateFragment : Fragment() {
             title = title,
             author = authorList,
             coverId = coverId,
-            publishYear = publishYear
+            publishYear = publishYear,
+            isFavourite = false
         )
 
         val db = AppDatabase.getDatabase(requireContext())
