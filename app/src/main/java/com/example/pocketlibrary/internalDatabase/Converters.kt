@@ -6,7 +6,11 @@ class Converters {
 
     @TypeConverter
     fun fromString(value: String): List<String> {
-        return if (value.isEmpty()) emptyList() else value.split(",")
+        return if (value.isEmpty()) {
+            emptyList()
+        } else {
+            value.split(",").map { it.trim() }
+        }
     }
 
     @TypeConverter

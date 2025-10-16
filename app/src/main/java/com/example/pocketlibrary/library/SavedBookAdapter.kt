@@ -54,11 +54,30 @@ class SavedBookAdapter (
 
                 val activity = context as? AppCompatActivity ?: return@setOnClickListener
 
-                activity.supportFragmentManager.beginTransaction()
+                val fm = activity.supportFragmentManager
+
+                val hasLibraryContainer =
+                    activity.findViewById<View?>(R.id.category_container) != null &&
+                    activity.findViewById<View?>(R.id.toolbar_container) != null
+
+                if (hasLibraryContainer) {
+                    fm.beginTransaction()
+                        .replace(R.id.category_container, fragment)
+                        .replace(R.id.toolbar_container, toolbarFragment)
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    fm.beginTransaction()
+                        .replace(R.id.main_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+
+                /*activity.supportFragmentManager.beginTransaction()
                     .replace(R.id.category_container, fragment)
                     .replace(R.id.toolbar_container, toolbarFragment)
                     .addToBackStack(null)
-                    .commit()
+                    .commit()*/
             }
         }
     }
