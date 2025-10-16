@@ -1,11 +1,7 @@
 package com.example.pocketlibrary.internalDatabase
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.pocketlibrary.Book
 
 @Dao
@@ -14,8 +10,14 @@ interface BookDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg books: Book)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(books: List<Book>)
+
     @Delete
     suspend fun delete(vararg books: Book)
+
+    @Query("DELETE FROM books")
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM books ORDER BY rowid DESC")
     fun getAllBooks(): LiveData<List<Book>>
