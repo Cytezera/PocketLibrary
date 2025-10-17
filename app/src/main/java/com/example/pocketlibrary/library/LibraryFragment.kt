@@ -30,7 +30,7 @@ class LibraryFragment : Fragment() {
             fragment.arguments = bundle
 
             parentFragmentManager.beginTransaction()
-                .replace(R.id.category_container, SavedBookFragment())
+                .replace(R.id.category_container, fragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -43,7 +43,7 @@ class LibraryFragment : Fragment() {
             fragment.arguments = bundle
 
             parentFragmentManager.beginTransaction()
-                .replace(R.id.category_container, SavedBookFragment())
+                .replace(R.id.category_container, fragment)
                 .addToBackStack(null)
                 .commit()
         }
