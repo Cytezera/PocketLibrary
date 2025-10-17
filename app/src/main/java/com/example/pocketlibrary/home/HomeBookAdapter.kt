@@ -42,14 +42,23 @@ class HomeBookAdapter(
 
         holder.textTitle.text = book.title
 
-        book.coverId?.let{ coverId ->
-            val coverUrl = "https://covers.openlibrary.org/b/id/$coverId-M.jpg"
+        if (!book.coverUri.isNullOrEmpty()) {
             Glide.with(context)
-                .load(coverUrl)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_foreground)
+                .load(book.coverUri)
+                .placeholder(R.drawable.ic_placeholder)
+                .error(R.drawable.ic_placeholder)
                 .into(holder.bookImage)
 
+        } else if (book.coverId != 0) {
+            val coverUrl = "https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg"
+            Glide.with(context)
+                .load(coverUrl)
+                .placeholder(R.drawable.ic_placeholder)
+                .error(R.drawable.ic_placeholder)
+                .into(holder.bookImage)
+
+        } else {
+            holder.bookImage.setImageResource(R.drawable.ic_placeholder)
         }
 
 
