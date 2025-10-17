@@ -52,10 +52,13 @@ class SavedBookAdapter (
                 val fragment = BookFragment.newInstance(book)
                 val toolbarFragment = BookToolbarFragment.newInstance(book)
 
+                //if curr screen can hold fragments, continue, if not, then do ntg
                 val activity = context as? AppCompatActivity ?: return@setOnClickListener
 
+                //add, replace or rmv fragments
                 val fm = activity.supportFragmentManager
 
+                //if true, put in the fragments | if not, then show main fragment in main container 
                 val hasLibraryContainer =
                     activity.findViewById<View?>(R.id.category_container) != null &&
                     activity.findViewById<View?>(R.id.toolbar_container) != null
