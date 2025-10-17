@@ -27,7 +27,10 @@ data class Book(
     var publishYear: Int? = null,
 
     @ColumnInfo(name = "is_favourite")
-    var isFavourite: Boolean = false
+    var isFavourite: Boolean = false,
+
+    @ColumnInfo(name = "cover_uri")
+    var coverUri:  String? = null
 
 ) : Parcelable {
     constructor() : this("", "", emptyList(), 0, null, false)

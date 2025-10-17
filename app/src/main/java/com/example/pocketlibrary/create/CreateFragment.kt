@@ -102,17 +102,15 @@ class CreateFragment : Fragment() {
         val key = UUID.randomUUID().toString()
         val authorList = listOf(authorInput)
         val publishYear = yearInput.toIntOrNull()
-        val coverId = if (photoUri != null) {
-            R.drawable.ic_placeholder
-        } else 0
 
         val book = Book(
             key = key,
             title = title,
             author = authorList,
-            coverId = coverId,
+            coverId = R.drawable.ic_placeholder,
             publishYear = publishYear,
-            isFavourite = false
+            isFavourite = false,
+            coverUri = photoUri?.toString()
         )
 
         val db = AppDatabase.getDatabase(requireContext())
@@ -124,6 +122,8 @@ class CreateFragment : Fragment() {
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
         clearForm()
     }
+
+
 
     private fun clearForm() {
         etTitle.text.clear()
