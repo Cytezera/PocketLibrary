@@ -23,7 +23,8 @@ class DiscoverRepository(
                 title = title,
                 author = d.authorNames ?: emptyList(),
                 coverId = d.coverId ?: 0,
-                publishYear = d.publishYear
+                publishYear = d.publishYear,
+                isFavourite = d.isFavourite
             )
         }.distinctBy { it.key }
     }

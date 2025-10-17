@@ -78,6 +78,7 @@ class BookToolbarFragment : Fragment() {
                     val saved = bookDao.isBookSaved(currentBook.key) > 0
                     if (!saved) {
                         // Add locally
+                        currentBook.isFavourite = true
                         bookDao.insert(currentBook)
                         btnSave.setImageResource(R.drawable.ic_saved)
                         Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()
@@ -85,6 +86,7 @@ class BookToolbarFragment : Fragment() {
                         SyncManager.addBookToFirebase(currentBook)
 
                     } else {
+                        currentBook.isFavourite = false
                         bookDao.delete(currentBook)
                         btnSave.setImageResource(R.drawable.ic_save)
                         Toast.makeText(requireContext(), "Book unsaved", Toast.LENGTH_SHORT).show()

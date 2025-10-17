@@ -25,7 +25,8 @@ data class docs(
     @Json(name = "author_name") val authorNames: List<String>?,
     @Json(name = "cover_i") val coverId: Int?,
     @Json(name = "first_publish_year") val publishYear: Int?,
-    @Json(name = "key") val key : String?
+    @Json(name = "key") val key : String?,
+    val isFavourite: Boolean = false
 ){
     val coverUrl: String?
         get() = coverId?.let{"https://covers.openlibrary.org/a/olid/OL23919A-M.jpg"}
