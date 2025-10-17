@@ -17,6 +17,13 @@ class SavedBookFragment : Fragment() {
 
     private lateinit var viewModel: SavedBookViewModel
     private lateinit var adapter: SavedBookAdapter
+    private var isFavouriteFlag: Boolean = false
+
+    //receiving the data
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isFavouriteFlag = arguments?.getBoolean("isFavourite") ?: false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +42,12 @@ class SavedBookFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[SavedBookViewModel::class.java]
         viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            adapter.updateList(books)
+            val filteredBooks = if (isFavouriteFlag) {
+                books.filter { it.isFavourite }
+            } else {
+                books
+            }
+            adapter.updateList(filteredBooks)
         }
 
         //to search offline

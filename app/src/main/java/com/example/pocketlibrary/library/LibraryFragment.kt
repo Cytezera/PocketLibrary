@@ -23,6 +23,12 @@ class LibraryFragment : Fragment() {
 
         //change to SavedBookFragment
         favouriteButton.setOnClickListener {
+            val fragment = SavedBookFragment()
+            //pass data
+            val bundle = Bundle()
+            bundle.putBoolean("isFavourite", true)
+            fragment.arguments = bundle
+
             parentFragmentManager.beginTransaction()
                 .replace(R.id.category_container, SavedBookFragment())
                 .addToBackStack(null)
@@ -30,6 +36,12 @@ class LibraryFragment : Fragment() {
         }
 
         localStorageButton.setOnClickListener {
+            val fragment = SavedBookFragment()
+            //pass data
+            val bundle = Bundle()
+            bundle.putBoolean("isFavourite", false)
+            fragment.arguments = bundle
+
             parentFragmentManager.beginTransaction()
                 .replace(R.id.category_container, SavedBookFragment())
                 .addToBackStack(null)
