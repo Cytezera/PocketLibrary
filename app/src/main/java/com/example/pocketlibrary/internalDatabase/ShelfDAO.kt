@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.pocketlibrary.Book
 import com.example.pocketlibrary.Shelf
 
 @Dao
@@ -13,6 +14,11 @@ interface ShelfDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShelf(shelf: Shelf)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(shelves: List<Shelf>)
+
+    @Query("DELETE FROM shelves")
+    suspend fun deleteAll()
     @Update
     suspend fun updateShelf(shelf: Shelf)
 

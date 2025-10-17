@@ -9,7 +9,7 @@ import com.example.pocketlibrary.Book
 import com.example.pocketlibrary.Shelf
 
 
-@Database(entities = [Book::class, Shelf::class], version = 3, exportSchema = false)
+@Database(entities = [Book::class, Shelf::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDAO

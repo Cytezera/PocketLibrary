@@ -22,13 +22,12 @@ object SyncManager {
         if (!isOnline(context)) return
         val db = AppDatabase.getDatabase(context)
         val bookDao = db.bookDao()
-        val shelfDAO = db.shelfDAO()
+        val shelfDao = db.shelfDAO()
 
         withContext(Dispatchers.IO) {
             try {
                 Log.d("SyncManager", "Works here too cuh")
 
-                // Pull data from Firestore
                 val snapshot = firestore.collection("books").get().await()
                 val books = snapshot.toObjects(Book::class.java)
 
@@ -36,7 +35,24 @@ object SyncManager {
                 for (book in books) {
                     Log.d("SyncManager", "Book from Firebase: $book")
                 }
-                // Update local Room DB
+
+                val shelfSnapshot = firestore.collection("shelves").get().await()
+                val shelves = shelfSnapshot.toObjects(Shelf::class.java)
+
+
+                for (book in books) {
+                    Log.d("SyncManager", "Book from Firebase: $book")
+                }
+
+                for (shelf in shelves){
+                    Log.d("SyncManager", "Book from Firebase: $shelf")
+
+                }
+
+                shelfDao.deleteAll()
+                shelfDao.insertAll(shelves)
+
+
                 bookDao.deleteAll()
                 bookDao.insertAll(books)
             } catch (e: Exception) {
