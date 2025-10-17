@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import android.util.Log
+import com.example.pocketlibrary.Shelf
 
 
 object SyncManager {
@@ -21,6 +22,7 @@ object SyncManager {
         if (!isOnline(context)) return
         val db = AppDatabase.getDatabase(context)
         val bookDao = db.bookDao()
+        val shelfDAO = db.shelfDAO()
 
         withContext(Dispatchers.IO) {
             try {
@@ -55,11 +57,11 @@ object SyncManager {
                     .set(book)
                     .await()
 
-            } catch (e: Exception) {
+            } catch (e: Exception) {1
             }
         }
     }
-    
+
 
 
 
@@ -81,4 +83,38 @@ object SyncManager {
         val capabilities = cm.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
+
+    suspend fun addShelfToFirebase(shelf: Shelf){
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelf.shelfName.isBlank()) {
+                    return@withContext
+                }
+
+                firestore.collection("shelves").document(shelf.shelfName)
+                    .set(shelf)
+                    .await()
+
+            } catch (e: Exception) {1
+            }
+        }
+    }
+
+    suspend fun addBookIdToShelf(shelfName: String, bookKey: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelfName.isBlank() || bookKey.isBlank()) return@withContext
+
+                firestore.collection("shelves")
+                    .document(shelfName)
+                    .update("bookIds", com.google.firebase.firestore.FieldValue.arrayUnion(bookKey))
+                    .await()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 }
