@@ -1,6 +1,5 @@
 package com.example.pocketlibrary.home
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pocketlibrary.R
 import com.example.pocketlibrary.create.CreateFragment
@@ -19,7 +17,7 @@ import com.example.pocketlibrary.library.SavedBookAdapter
 import com.example.pocketlibrary.library.SavedBookViewModel
 import com.example.pocketlibrary.search.SearchFragment
 
-class HomeFragment : Fragment() {
+class HomeBodyFragment : Fragment() {
 
     private var _b: FragmentHomeBinding? = null
     private val b get() = _b!!
