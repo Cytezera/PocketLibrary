@@ -28,15 +28,7 @@
         android:layout_marginTop="24dp"
         android:divider="?android:attr/dividerVertical" >
 
-        <Button
-            android:id="@+id/localStorage_button"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#D2B48C"
-            android:text="Local Storage"
-            android:textColor="#5C4033"
-            android:layout_marginVertical="8dp"
-            android:paddingVertical="8dp"/>
+
 
         <Button
             android:id="@+id/favourite_button"
@@ -53,18 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:padding="8dp"
             android:overScrollMode="never"
             tools:listitem="@layout/item_shelves_button" />
 
-        <ImageView
-            android:id="@+id/shelves"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="48dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:src="@drawable/shelves" />
+
     </LinearLayout>
 </LinearLayout>

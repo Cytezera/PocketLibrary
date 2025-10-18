@@ -191,6 +191,7 @@ class BookToolbarFragment : Fragment() {
                 lifecycleScope.launch {
                     val isFavourite = currentBook.isFavourite
                     if (!isFavourite) {
+                        currentBook.isFavourite = true
                         bookDao.updateFavourite(currentBook.key,true)
                         btnSave.setImageResource(R.drawable.ic_saved)
                         Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()

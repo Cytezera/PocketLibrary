@@ -27,11 +27,10 @@ class LibraryFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_library, container, false)
 
         val favouriteButton = view.findViewById<Button>(R.id.favourite_button)
-        val localStorageButton = view.findViewById<Button>(R.id.localStorage_button)
 
         val shelfRecyclerView = view.findViewById<RecyclerView>(R.id.shelfRecyclerView)
 
-        shelfAdapter = ShelfAdapter(parentFragmentManager)
+        shelfAdapter = ShelfAdapter(parentFragmentManager,requireContext())
         shelfRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         shelfRecyclerView.adapter = shelfAdapter
 
@@ -54,18 +53,7 @@ class LibraryFragment : Fragment() {
                 .commit()
         }
 
-        localStorageButton.setOnClickListener {
-            val fragment = SavedBookFragment()
-            //pass data
-            val bundle = Bundle()
-            bundle.putBoolean("isFavourite", false)
-            fragment.arguments = bundle
 
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.category_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
         return view
     }
 }
