@@ -17,7 +17,7 @@ import android.util.Log
 
 
 class HomeToolbarFragment : Fragment() {
-    private lateinit var adapter: HomeBookAdapter
+    private lateinit var adapter: HistoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,27 +37,23 @@ class HomeToolbarFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        adapter = HomeBookAdapter(emptyList(), requireContext(), parentFragmentManager)
+        adapter = HistoryAdapter(emptyList(), requireContext(), parentFragmentManager)
         recyclerView.adapter = adapter
 
 
 
         lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-
             val history = db.historyDao().getLatestHistory(12)
             Log.d("HomeToolbarFragment", "History: $history")
 
             val bookIds = history.map { it.bookId }
+            val booksFromDb = db.bookDao().getBooksByIds(bookIds)
 
-            val books = if (bookIds.isNotEmpty()) {
-                db.bookDao().getBooksByIds(bookIds)
-            } else {
-                emptyList()
-            }
+            val books = bookIds.mapNotNull { id -> booksFromDb.find { it.key == id } }
 
             adapter.updateList(books)
         }
+
     }
 
 }
