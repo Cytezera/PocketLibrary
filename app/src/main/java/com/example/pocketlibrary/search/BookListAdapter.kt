@@ -63,20 +63,6 @@ class BookListAdapter(
             .into(holder.bookImage)
 
         holder.itemView.setOnClickListener {
-            lifecycleOwner.lifecycleScope.launch {
-                val db = AppDatabase.getDatabase(context)
-
-                val exists = db.bookDao().countBookByKey(book.key) > 0
-
-                if (!exists) {
-                    db.bookDao().insert(book)
-                }
-                db.historyDao().insert(History(bookId = book.key))
-
-
-
-
-            }
 
             fragmentManager.beginTransaction()
                 .replace(R.id.searchBar_container, BookToolbarFragment.newInstance(book))

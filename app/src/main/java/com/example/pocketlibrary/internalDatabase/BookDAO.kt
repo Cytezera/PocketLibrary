@@ -39,5 +39,10 @@ interface BookDAO {
     WHERE book_key IN (:bookIds)
     """)
     suspend fun getBooksByIds(bookIds: List<String>): List<Book>
+    @Query("UPDATE books SET is_favourite = :isFavourite WHERE `book_key` = :bookKey")
+    suspend fun updateFavourite(bookKey: String, isFavourite: Boolean)
+
+    @Query("SELECT * FROM books WHERE book_key = :bookKey LIMIT 1")
+    suspend fun getBookByKey(bookKey: String): Book?
 
 }

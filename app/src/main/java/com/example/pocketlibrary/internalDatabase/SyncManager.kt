@@ -11,11 +11,56 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import android.util.Log
 import com.example.pocketlibrary.Shelf
+import com.google.firebase.firestore.SetOptions
 
 
 object SyncManager {
 
     private val firestore = FirebaseFirestore.getInstance()
+
+//    suspend fun syncWithFirebase(context: Context) {
+//        Log.d("SyncManager", "Works here cuh")
+//        if (!isOnline(context)) return
+//        val db = AppDatabase.getDatabase(context)
+//        val bookDao = db.bookDao()
+//        val shelfDao = db.shelfDAO()
+//
+//        withContext(Dispatchers.IO) {
+//            try {
+//                Log.d("SyncManager", "Works here too cuh")
+//
+//                val snapshot = firestore.collection("books").get().await()
+//                val books = snapshot.toObjects(Book::class.java)
+//
+//
+//                for (book in books) {
+//                    Log.d("SyncManager", "Book from Firebase: $book")
+//                }
+//
+//                val shelfSnapshot = firestore.collection("shelves").get().await()
+//                val shelves = shelfSnapshot.toObjects(Shelf::class.java)
+//
+//
+//                for (book in books) {
+//                    Log.d("SyncManager", "Book from Firebase: $book")
+//                }
+//
+//                for (shelf in shelves){
+//                    Log.d("SyncManager", "Book from Firebase: $shelf")
+//
+//                }
+//
+//                shelfDao.deleteAll()
+//                shelfDao.insertAll(shelves)
+//
+//
+//                bookDao.deleteAll()
+//                bookDao.insertAll(books)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 
     suspend fun syncWithFirebase(context: Context) {
         Log.d("SyncManager", "Works here cuh")
@@ -32,34 +77,30 @@ object SyncManager {
                 val books = snapshot.toObjects(Book::class.java)
 
 
-                for (book in books) {
-                    Log.d("SyncManager", "Book from Firebase: $book")
-                }
 
                 val shelfSnapshot = firestore.collection("shelves").get().await()
                 val shelves = shelfSnapshot.toObjects(Shelf::class.java)
 
 
-                for (book in books) {
-                    Log.d("SyncManager", "Book from Firebase: $book")
-                }
 
-                for (shelf in shelves){
-                    Log.d("SyncManager", "Book from Firebase: $shelf")
-
-                }
 
                 shelfDao.deleteAll()
                 shelfDao.insertAll(shelves)
 
 
-                bookDao.deleteAll()
-                bookDao.insertAll(books)
+
+                for (book in books) {
+                    val exists = bookDao.countBookByKey(book.key) > 0
+                    if (!exists) {
+                        bookDao.insert(book)
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
 
     suspend fun addBookToFirebase(book: Book) {
         withContext(Dispatchers.IO) {
@@ -70,7 +111,7 @@ object SyncManager {
 
                 val documentId = book.key.substringAfterLast("/")
                 firestore.collection("books").document(documentId)
-                    .set(book)
+                    .set(book, SetOptions.merge())
                     .await()
 
             } catch (e: Exception) {1
@@ -131,6 +172,23 @@ object SyncManager {
             }
         }
     }
+
+    suspend fun removeBookIdFromShelf(shelfName: String, bookKey: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelfName.isBlank() || bookKey.isBlank()) return@withContext
+
+                firestore.collection("shelves")
+                    .document(shelfName)
+                    .update("bookIds", com.google.firebase.firestore.FieldValue.arrayRemove(bookKey))
+                    .await()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 
 
 }
