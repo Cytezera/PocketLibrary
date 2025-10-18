@@ -6,11 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.pocketlibrary.Book
+import com.example.pocketlibrary.Shelf
+import com.example.pocketlibrary.History
 
-@Database(entities = [Book::class], version = 1, exportSchema = false)
+
+@Database(entities = [Book::class, Shelf::class, History::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDAO
+    abstract fun shelfDAO(): ShelfDAO
+
+    abstract fun historyDao(): HistoryDAO
 
     companion object {
         @Volatile

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pocketlibrary.R
 import com.example.pocketlibrary.create.CreateFragment
-import com.example.pocketlibrary.databinding.FragmentHomeBinding
 import com.example.pocketlibrary.discovery.DiscoveryFragment
 import com.example.pocketlibrary.internalDatabase.AppDatabase
 import com.example.pocketlibrary.library.LibraryContainerFragment

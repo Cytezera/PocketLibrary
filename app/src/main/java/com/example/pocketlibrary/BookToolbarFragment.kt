@@ -56,6 +56,8 @@ class BookToolbarFragment : Fragment() {
         val btnBack = view.findViewById<ImageView>(R.id.btnBack)
         val btnSave = view.findViewById<ImageView>(R.id.btnSave)
         val btnShare = view.findViewById<ImageView>(R.id.btnShare)
+        val btnAddToShelf = view.findViewById<ImageView>(R.id.btnAddToShelf)
+
         db = AppDatabase.getDatabase(requireContext())
         bookDao = db.bookDao()
         btnBack.setOnClickListener {
@@ -69,6 +71,45 @@ class BookToolbarFragment : Fragment() {
                     btnSave.setImageResource(R.drawable.ic_saved) // change to saved icon
                 } else {
                     btnSave.setImageResource(R.drawable.ic_save) // default save icon
+                }
+            }
+        }
+
+        btnAddToShelf.setOnClickListener {
+            book?.let { currentBook ->
+                lifecycleScope.launch {
+                    // Get all existing shelves from Room
+                    val shelves = db.shelfDAO().getAllShelves()
+                    val shelfNames = shelves.map { it.shelfName }.toMutableList()
+                    val options = arrayOf("Create New Shelf") + shelfNames
+
+                    val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    builder.setTitle("Add to Shelf")
+                    builder.setItems(options) { dialog, which ->
+                        if (which == 0) {
+                            // Create new shelf
+                            val input = android.widget.EditText(requireContext())
+                            input.hint = "Enter shelf name"
+
+                            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                .setTitle("New Shelf")
+                                .setView(input)
+                                .setPositiveButton("Create") { innerDialog, _ ->
+                                    val shelfName = input.text.toString().trim()
+                                    if (shelfName.isNotEmpty()) {
+                                        addBookToShelf(currentBook, shelfName)
+                                    }
+                                    innerDialog.dismiss()
+                                }
+                                .setNegativeButton("Cancel") { innerDialog, _ -> innerDialog.cancel() }
+                                .show()
+                        } else {
+                            // Existing shelf selected
+                            val selectedShelf = options[which]
+                            addBookToShelf(currentBook, selectedShelf)
+                        }
+                    }
+                    builder.show()
                 }
             }
         }
@@ -119,5 +160,27 @@ class BookToolbarFragment : Fragment() {
         }
     }
 
+    private fun addBookToShelf(book: Book, shelfName: String) {
+        lifecycleScope.launch {
+            val exists = db.bookDao().countBookByKey(book.key) > 0
+            if(!exists){
+                db.bookDao().insert(book)
+                SyncManager.addBookToFirebase(book)
+            }
+            val shelves = db.shelfDAO().getAllShelves()
+            val shelfExists = shelves.any { it.shelfName == shelfName }
+
+            if (!shelfExists){
+                db.shelfDAO().insertShelf(Shelf(shelfName,emptyList()))
+                SyncManager.addShelfToFirebase(Shelf(shelfName,emptyList()))
+            }
+            db.shelfDAO().addBookIdToShelf(shelfName, book.key)
+            SyncManager.addBookIdToShelf(shelfName, book.key)
+
+
+
+            Toast.makeText(requireContext(), "Added to $shelfName", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     }

@@ -17,21 +17,19 @@ import com.example.pocketlibrary.BookFragment
 import com.example.pocketlibrary.BookToolbarFragment
 
 
-class HomeBookAdapter(
+class HistoryAdapter(
     private var books : List<Book>,
     private val context : Context,
     private val fragmentManager: FragmentManager
-): RecyclerView.Adapter<HomeBookAdapter.BookViewHolder>(){
+): RecyclerView.Adapter<HistoryAdapter.BookViewHolder>(){
     class BookViewHolder(view:View) : RecyclerView.ViewHolder(view){
-        val textTitle : TextView = view.findViewById(R.id.textTitle)
         val bookImage : ImageView = view.findViewById(R.id.bookImage)
 
-        val bookAuthor : TextView = view.findViewById(R.id.textAuthor)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_book, parent, false)
+            .inflate(R.layout.item_history, parent, false)
         return BookViewHolder(view)
     }
 
@@ -40,7 +38,6 @@ class HomeBookAdapter(
 
         val book = books[position]
 
-        holder.textTitle.text = book.title
 
         if (!book.coverUri.isNullOrEmpty()) {
             Glide.with(context)
@@ -61,8 +58,6 @@ class HomeBookAdapter(
             holder.bookImage.setImageResource(R.drawable.ic_placeholder)
         }
 
-
-        holder.bookAuthor.text = book.author.joinToString(", ")
 
         holder.itemView.setOnClickListener{
             val fragment = BookFragment.newInstance(book)

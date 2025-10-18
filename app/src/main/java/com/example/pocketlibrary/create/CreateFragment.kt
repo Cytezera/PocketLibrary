@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import com.example.pocketlibrary.internalDatabase.SyncManager
+import com.example.pocketlibrary.Shelf
 
 class CreateFragment : Fragment() {
 
@@ -102,28 +103,37 @@ class CreateFragment : Fragment() {
         val key = UUID.randomUUID().toString()
         val authorList = listOf(authorInput)
         val publishYear = yearInput.toIntOrNull()
-        val coverId = if (photoUri != null) {
-            R.drawable.ic_placeholder
-        } else 0
 
         val book = Book(
             key = key,
             title = title,
             author = authorList,
-            coverId = coverId,
+            coverId = R.drawable.ic_placeholder,
             publishYear = publishYear,
-            isFavourite = false
+            isFavourite = false,
+            coverUri = photoUri?.toString()
         )
 
         val db = AppDatabase.getDatabase(requireContext())
         lifecycleScope.launch(Dispatchers.IO) {
             db.bookDao().insert(book)
             SyncManager.addBookToFirebase(book)
+            val shelves = db.shelfDAO().getAllShelves()
+            val localExists = shelves.any { it.shelfName == "local" }
+            if (!localExists) {
+                db.shelfDAO().insertShelf(Shelf("local", emptyList()))
+                SyncManager.addShelfToFirebase(Shelf("local",emptyList()))
+            }
+            db.shelfDAO().addBookIdToShelf("local",book.key)
+            SyncManager.addBookIdToShelf("local", book.key)
         }
+
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
         clearForm()
     }
+
+
 
     private fun clearForm() {
         etTitle.text.clear()

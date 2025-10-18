@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import android.util.Log
+import com.example.pocketlibrary.Shelf
 
 
 object SyncManager {
@@ -21,12 +22,12 @@ object SyncManager {
         if (!isOnline(context)) return
         val db = AppDatabase.getDatabase(context)
         val bookDao = db.bookDao()
+        val shelfDao = db.shelfDAO()
 
         withContext(Dispatchers.IO) {
             try {
                 Log.d("SyncManager", "Works here too cuh")
 
-                // Pull data from Firestore
                 val snapshot = firestore.collection("books").get().await()
                 val books = snapshot.toObjects(Book::class.java)
 
@@ -34,7 +35,24 @@ object SyncManager {
                 for (book in books) {
                     Log.d("SyncManager", "Book from Firebase: $book")
                 }
-                // Update local Room DB
+
+                val shelfSnapshot = firestore.collection("shelves").get().await()
+                val shelves = shelfSnapshot.toObjects(Shelf::class.java)
+
+
+                for (book in books) {
+                    Log.d("SyncManager", "Book from Firebase: $book")
+                }
+
+                for (shelf in shelves){
+                    Log.d("SyncManager", "Book from Firebase: $shelf")
+
+                }
+
+                shelfDao.deleteAll()
+                shelfDao.insertAll(shelves)
+
+
                 bookDao.deleteAll()
                 bookDao.insertAll(books)
             } catch (e: Exception) {
@@ -55,10 +73,11 @@ object SyncManager {
                     .set(book)
                     .await()
 
-            } catch (e: Exception) {
+            } catch (e: Exception) {1
             }
         }
     }
+
 
 
 
@@ -80,4 +99,38 @@ object SyncManager {
         val capabilities = cm.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
+
+    suspend fun addShelfToFirebase(shelf: Shelf){
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelf.shelfName.isBlank()) {
+                    return@withContext
+                }
+
+                firestore.collection("shelves").document(shelf.shelfName)
+                    .set(shelf)
+                    .await()
+
+            } catch (e: Exception) {1
+            }
+        }
+    }
+
+    suspend fun addBookIdToShelf(shelfName: String, bookKey: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelfName.isBlank() || bookKey.isBlank()) return@withContext
+
+                firestore.collection("shelves")
+                    .document(shelfName)
+                    .update("bookIds", com.google.firebase.firestore.FieldValue.arrayUnion(bookKey))
+                    .await()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 }

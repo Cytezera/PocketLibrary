@@ -43,26 +43,35 @@ class BookFragment : Fragment() {
         val title: TextView = view.findViewById(R.id.bookTitle)
         val author: TextView = view.findViewById(R.id.bookAuthor)
         val year: TextView = view.findViewById(R.id.bookYear)
-        val bookImage : ImageView = view.findViewById(R.id.bookImage)
+        val bookImage: ImageView = view.findViewById(R.id.bookImage)
 
         val b = book
-        if (b != null){
+        if (b != null) {
             title.text = b.title
             author.text = b.author.joinToString(", ")
             year.text = b.publishYear.toString()
 
-            b.coverId?.let{ coverId ->
-                val coverUrl = "https://covers.openlibrary.org/b/id/$coverId-M.jpg"
+            if (!b.coverUri.isNullOrEmpty()) {
                 Glide.with(requireContext())
-                    .load(coverUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_foreground)
+                    .load(b.coverUri)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
                     .into(bookImage)
 
+            } else if (b.coverId != 0) {
+                val coverUrl = "https://covers.openlibrary.org/b/id/${b.coverId}-M.jpg"
+                Glide.with(requireContext())
+                    .load(coverUrl)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
+                    .into(bookImage)
+
+            } else {
+                bookImage.setImageResource(R.drawable.ic_placeholder)
             }
+
+
         }
-
-
     }
 
 
