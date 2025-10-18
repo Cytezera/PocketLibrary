@@ -139,6 +139,7 @@ class BookToolbarFragment : Fragment() {
 
                     builder.setPositiveButton("Save") { _, _ ->
                         lifecycleScope.launch {
+                            var addedToShelf = false
                             for (i in shelfNames.indices) {
                                 val shelfName = shelfNames[i]
                                 val isChecked = checkedItems[i]
@@ -148,6 +149,8 @@ class BookToolbarFragment : Fragment() {
                                     if (!shelf.bookIds.contains(currentBook.key)) {
                                         db.shelfDAO().addBookIdToShelf(shelfName, currentBook.key)
                                         SyncManager.addBookIdToShelf(shelfName, currentBook.key)
+                                        SyncManager.addBookToFirebase(currentBook)
+                                        addedToShelf = true
                                     }
                                 } else {
                                     if (shelf.bookIds.contains(currentBook.key)) {
@@ -155,6 +158,11 @@ class BookToolbarFragment : Fragment() {
                                         SyncManager.removeBookIdFromShelf(shelfName, currentBook.key)
                                     }
                                 }
+                            }
+
+                            if (addedToShelf){
+                                SyncManager.addBookToFirebase(currentBook)
+                                Toast.makeText(requireContext(), "teset", Toast.LENGTH_SHORT).show()
                             }
 
                             Toast.makeText(

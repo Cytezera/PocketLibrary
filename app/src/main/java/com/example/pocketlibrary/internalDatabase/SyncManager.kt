@@ -11,6 +11,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import android.util.Log
 import com.example.pocketlibrary.Shelf
+import com.google.firebase.firestore.SetOptions
 
 
 object SyncManager {
@@ -110,7 +111,7 @@ object SyncManager {
 
                 val documentId = book.key.substringAfterLast("/")
                 firestore.collection("books").document(documentId)
-                    .set(book)
+                    .set(book, SetOptions.merge())
                     .await()
 
             } catch (e: Exception) {1
