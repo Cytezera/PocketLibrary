@@ -44,6 +44,8 @@ interface ShelfDAO {
     @Query("SELECT * FROM shelves WHERE shelf_name = :shelfName LIMIT 1")
     suspend fun getShelfByName(shelfName: String): Shelf?
 
+
+
     // Helper to add a book ID to a shelf
     suspend fun addBookIdToShelf(shelfName: String, bookId: String) {
         val shelf = getShelf(shelfName)

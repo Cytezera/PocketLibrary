@@ -11,6 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pocketlibrary.R
+import com.example.pocketlibrary.internalDatabase.AppDatabase
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
+
 
 class SavedBookFragment : Fragment() {
 
@@ -18,10 +23,17 @@ class SavedBookFragment : Fragment() {
     private lateinit var adapter: SavedBookAdapter
     private var isFavouriteFlag: Boolean = false
 
+    private var shelfName: String? = null
+
+    private lateinit var db: AppDatabase
+
+
+
     //receiving the data
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFavouriteFlag = arguments?.getBoolean("isFavourite") ?: false
+        shelfName = arguments?.getString("shelfName")
     }
 
     override fun onCreateView(
@@ -40,14 +52,33 @@ class SavedBookFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel = ViewModelProvider(this)[SavedBookViewModel::class.java]
+        db = AppDatabase.getDatabase(requireContext())
+        val shelfDao = db.shelfDAO()
         viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val filteredBooks = if (isFavouriteFlag) {
-                books.filter { it.isFavourite }
-            } else {
-                books
+            viewLifecycleOwner.lifecycleScope.launch {
+                val filteredBooks = if (isFavouriteFlag) {
+                    // Show only favourites
+                    books.filter { it.isFavourite }
+
+                } else if (!shelfName.isNullOrEmpty()) {
+                    val shelf = db.shelfDAO().getShelfByName(shelfName!!) //idk magai gui zomai use shelfName!! but its fine hahahaa
+                    val shelfBookIds = shelf?.bookIds ?: emptyList()
+                    books.filter { it.key in shelfBookIds }
+
+                } else {
+                    //just in case
+                    books
+                }
+
+                adapter.updateList(filteredBooks)
             }
-            adapter.updateList(filteredBooks)
         }
+
+
+
+
+
+
 
         //to search offline
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
