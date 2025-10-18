@@ -33,12 +33,13 @@ class BookListFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.bookRecylerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = BookListAdapter(emptyList(), requireContext(), parentFragmentManager, viewLifecycleOwner)
+        adapter = BookListAdapter(requireContext(), parentFragmentManager, viewLifecycleOwner)
         recyclerView.adapter = adapter
+        recyclerView.setHasFixedSize(true)
 
         viewLifecycleOwner.lifecycleScope.launch {
             bookViewModel.state.collectLatest { uiState ->
-                adapter.updateList(
+                adapter.submitList(
                     uiState.results.map { doc ->
                         Book(
                             key = doc.key ?: "unknown_${doc.coverId ?: 0}",

@@ -28,9 +28,24 @@ class BookViewModel : ViewModel(){
         searchJob?.cancel()
         searchJob = viewModelScope.launch{
             delay(300)
-            search()
+            val queryTrimmed = q.trim()
+            if(queryTrimmed.isEmpty()){
+                _state.value = _state.value.copy(results = emptyList(), error = null, loading = false)
+            } else {
+                _state.value = _state.value.copy(loading = true, error = null)
+                try {
+                    val resp = Network.api.searchBooks(queryTrimmed)
+                    _state.value = _state.value.copy(results = resp.docs, loading = false)
+                } catch(t: Throwable){
+                    _state.value = _state.value.copy(
+                        loading = false,
+                        error = t.message ?: "something went wrong"
+                    )
+                }
+            }
         }
     }
+
     fun search(){
         val q = _state.value.query.trim()
         if (q.isEmpty()){
