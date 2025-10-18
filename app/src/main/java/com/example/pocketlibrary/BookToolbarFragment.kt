@@ -82,7 +82,6 @@ class BookToolbarFragment : Fragment() {
                     val shelves = db.shelfDAO().getAllShelves()
                     val shelfNames = shelves.map { it.shelfName }.toMutableList()
                     val options = arrayOf("Create New Shelf") + shelfNames
-
                     val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
                     builder.setTitle("Add to Shelf")
                     builder.setItems(options) { dialog, which ->

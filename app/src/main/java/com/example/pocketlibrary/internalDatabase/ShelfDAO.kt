@@ -1,5 +1,6 @@
 package com.example.pocketlibrary.internalDatabase
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -27,6 +28,12 @@ interface ShelfDAO {
 
     @Query("SELECT * FROM shelves")
     suspend fun getAllShelves(): List<Shelf>
+
+
+
+    @Query("SELECT * FROM shelves ORDER BY shelf_name ASC")
+    fun getAllShelvesCategory(): LiveData<List<Shelf>>
+
 
     @Query("DELETE FROM shelves WHERE shelf_name = :shelfName")
     suspend fun deleteShelf(shelfName: String)
