@@ -44,7 +44,6 @@ class HomeToolbarFragment : Fragment() {
 
         lifecycleScope.launch {
             val history = db.historyDao().getLatestHistory(12)
-            Log.d("HomeToolbarFragment", "History: $history")
 
             val bookIds = history.map { it.bookId }
             val booksFromDb = db.bookDao().getBooksByIds(bookIds)

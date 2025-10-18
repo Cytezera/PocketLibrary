@@ -8,6 +8,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.example.pocketlibrary.internalDatabase.AppDatabase
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
 
 
 class BookFragment : Fragment() {
@@ -68,6 +72,15 @@ class BookFragment : Fragment() {
 
             } else {
                 bookImage.setImageResource(R.drawable.ic_placeholder)
+            }
+
+            lifecycleScope.launch {
+                val db = AppDatabase.getDatabase(requireContext())
+
+                val exists = db.bookDao().countBookByKey(b.key) > 0
+                if (!exists) db.bookDao().insert(b)
+
+                db.historyDao().insert(History(bookId = b.key))
             }
 
 
