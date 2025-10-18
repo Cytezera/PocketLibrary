@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.pocketlibrary.internalDatabase.AppDatabase
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import android.widget.Toast
 
 
 
@@ -77,9 +78,16 @@ class BookFragment : Fragment() {
             lifecycleScope.launch {
                 val db = AppDatabase.getDatabase(requireContext())
 
-                val exists = db.bookDao().countBookByKey(b.key) > 0
-                if (!exists) db.bookDao().insert(b)
 
+
+                val exists = db.bookDao().countBookByKey(b.key) > 0
+
+                if (!exists){
+                    b.isFavourite = false
+                    db.bookDao().insert(b)
+                }
+
+                db.historyDao().deleteByBookId(b.key)
                 db.historyDao().insert(History(bookId = b.key))
             }
 

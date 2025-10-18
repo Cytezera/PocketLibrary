@@ -44,8 +44,10 @@ class HomeBodyFragment : Fragment() {
         recyclerView.adapter = adapter
 
         bookDao.getLatestBooks(12).observe(viewLifecycleOwner) { books ->
-            adapter.updateList(books)
+            val favourites = books.filter { it.isFavourite }
+            adapter.updateList(favourites)
         }
+
     }
 
 

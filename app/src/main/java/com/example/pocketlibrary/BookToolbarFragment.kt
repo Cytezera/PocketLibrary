@@ -17,6 +17,7 @@ import com.example.pocketlibrary.internalDatabase.SyncManager
 
 
 
+
 class BookToolbarFragment : Fragment() {
 
     private var book: Book? = null
@@ -66,8 +67,11 @@ class BookToolbarFragment : Fragment() {
 
         book?.let { currentBook ->
             lifecycleScope.launch {
-                val saved = bookDao.isBookSaved(currentBook.key) > 0
-                if (saved) {
+
+                val tempBook = bookDao.getBookByKey(currentBook.key)
+                val isFavourite = tempBook?.isFavourite == false
+
+                if (currentBook.isFavourite) {
                     btnSave.setImageResource(R.drawable.ic_saved) // change to saved icon
                 } else {
                     btnSave.setImageResource(R.drawable.ic_save) // default save icon
@@ -115,11 +119,9 @@ class BookToolbarFragment : Fragment() {
         btnSave.setOnClickListener {
             book?.let { currentBook ->
                 lifecycleScope.launch {
-                    val saved = bookDao.isBookSaved(currentBook.key) > 0
-                    if (!saved) {
-                        // Add locally
-                        currentBook.isFavourite = true
-                        bookDao.insert(currentBook)
+                    val isFavourite = currentBook.isFavourite
+                    if (!isFavourite) {
+                        bookDao.updateFavourite(currentBook.key,true)
                         btnSave.setImageResource(R.drawable.ic_saved)
                         Toast.makeText(requireContext(), "Book saved!", Toast.LENGTH_SHORT).show()
 
@@ -127,11 +129,10 @@ class BookToolbarFragment : Fragment() {
 
                     } else {
                         currentBook.isFavourite = false
-                        bookDao.delete(currentBook)
+                        bookDao.updateFavourite(currentBook.key,false)
                         btnSave.setImageResource(R.drawable.ic_save)
                         Toast.makeText(requireContext(), "Book unsaved", Toast.LENGTH_SHORT).show()
 
-                        SyncManager.removeBookFromFirebase(currentBook.key)
                     }
                 }
             }
