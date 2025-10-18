@@ -4,24 +4,29 @@ package com.example.pocketlibrary.search
 
 import android.content.Context
 import android.view.LayoutInflater
-import com.example.pocketlibrary.Book
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.ImageView
-import android.content.Intent
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.example.pocketlibrary.R
-import androidx.fragment.app.FragmentManager
+import com.example.pocketlibrary.Book
 import com.example.pocketlibrary.BookFragment
 import com.example.pocketlibrary.BookToolbarFragment
+import com.example.pocketlibrary.History
+import com.example.pocketlibrary.R
+import com.example.pocketlibrary.internalDatabase.AppDatabase
+import kotlinx.coroutines.launch
+import androidx.fragment.app.FragmentManager
+
 
 
 class BookListAdapter(
     private var books : List<Book>,
     private val context : Context,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    private val lifecycleOwner: androidx.lifecycle.LifecycleOwner
 ): RecyclerView.Adapter<BookListAdapter.BookViewHolder>(){
     class BookViewHolder(view:View) : RecyclerView.ViewHolder(view){
         val textTitle : TextView = view.findViewById(R.id.textTitle)
@@ -66,6 +71,21 @@ class BookListAdapter(
         holder.bookAuthor.text = book.author.joinToString(", ")
 
         holder.itemView.setOnClickListener{
+
+            lifecycleOwner.lifecycleScope.launch {
+                val db = AppDatabase.getDatabase(context)
+
+
+                val exists = db.bookDao().countBookByKey(book.key) > 0
+                if(!exists){
+                    db.bookDao().insert(book)
+                }
+                db.historyDao().insert(History(bookId = book.key))
+
+
+            }
+
+
             val fragment = BookFragment.newInstance(book)
             val fragment2 = BookToolbarFragment.newInstance(book)
 

@@ -33,7 +33,7 @@ class BookListFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.bookRecylerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = BookListAdapter(emptyList(), requireContext(), parentFragmentManager)
+        adapter = BookListAdapter(emptyList(), requireContext(), parentFragmentManager, viewLifecycleOwner)
         recyclerView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {

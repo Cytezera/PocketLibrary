@@ -34,4 +34,10 @@ interface BookDAO {
     @Query("SELECT COUNT(*) FROM books WHERE book_key = :bookKey")
     suspend fun countBookByKey(bookKey: String): Int
 
+    @Query("""
+    SELECT * FROM books 
+    WHERE book_key IN (:bookIds)
+    """)
+    suspend fun getBooksByIds(bookIds: List<String>): List<Book>
+
 }
