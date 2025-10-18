@@ -174,6 +174,8 @@ class BookToolbarFragment : Fragment() {
                 db.shelfDAO().insertShelf(Shelf(shelfName,emptyList()))
                 SyncManager.addShelfToFirebase(Shelf(shelfName,emptyList()))
             }
+
+
             db.shelfDAO().addBookIdToShelf(shelfName, book.key)
             SyncManager.addBookIdToShelf(shelfName, book.key)
 
