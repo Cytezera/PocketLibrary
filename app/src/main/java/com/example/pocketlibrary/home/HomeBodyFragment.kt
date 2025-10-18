@@ -20,7 +20,6 @@ import com.example.pocketlibrary.search.BookListAdapter
 class HomeBodyFragment : Fragment() {
 
 
-    private val savedVm: SavedBookViewModel by activityViewModels()
     private lateinit var adapter: HomeBookAdapter
 
     override fun onCreateView(

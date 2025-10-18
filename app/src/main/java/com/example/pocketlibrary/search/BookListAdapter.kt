@@ -65,8 +65,17 @@ class BookListAdapter(
         holder.itemView.setOnClickListener {
             lifecycleOwner.lifecycleScope.launch {
                 val db = AppDatabase.getDatabase(context)
-                if (db.bookDao().countBookByKey(book.key) == 0) db.bookDao().insert(book)
+
+                val exists = db.bookDao().countBookByKey(book.key) > 0
+
+                if (!exists) {
+                    db.bookDao().insert(book)
+                }
                 db.historyDao().insert(History(bookId = book.key))
+
+
+
+
             }
 
             fragmentManager.beginTransaction()
