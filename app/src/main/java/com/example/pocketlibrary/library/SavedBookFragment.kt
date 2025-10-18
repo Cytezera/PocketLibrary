@@ -10,7 +10,6 @@ import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Query
 import com.example.pocketlibrary.R
 
 class SavedBookFragment : Fragment() {
@@ -32,7 +31,7 @@ class SavedBookFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_saved_book, container, false)
 
-        val searchBar = view.findViewById<SearchView>(androidx.appcompat.R.id.search_bar)
+        val searchBar = view.findViewById<SearchView>(R.id.search_bar)
         val backButton = view.findViewById<Button>(R.id.back_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.savedBookRecyclerView)
 
