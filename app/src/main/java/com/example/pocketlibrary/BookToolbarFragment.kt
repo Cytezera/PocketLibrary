@@ -79,43 +79,105 @@ class BookToolbarFragment : Fragment() {
             }
         }
 
+//        btnAddToShelf.setOnClickListener {
+//            book?.let { currentBook ->
+//                lifecycleScope.launch {
+//                    // Get all existing shelves from Room
+//                    val shelves = db.shelfDAO().getAllShelves()
+//                    val shelfNames = shelves.map { it.shelfName }.toMutableList()
+//                    val options = arrayOf("Create New Shelf") + shelfNames
+//                    val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+//                    builder.setTitle("Add to Shelf")
+//                    builder.setItems(options) { dialog, which ->
+//                        if (which == 0) {
+//                            // Create new shelf
+//                            val input = android.widget.EditText(requireContext())
+//                            input.hint = "Enter shelf name"
+//
+//                            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+//                                .setTitle("New Shelf")
+//                                .setView(input)
+//                                .setPositiveButton("Create") { innerDialog, _ ->
+//                                    val shelfName = input.text.toString().trim()
+//                                    if (shelfName.isNotEmpty()) {
+//                                        addBookToShelf(currentBook, shelfName)
+//                                    }
+//                                    innerDialog.dismiss()
+//                                }
+//                                .setNegativeButton("Cancel") { innerDialog, _ -> innerDialog.cancel() }
+//                                .show()
+//                        } else {
+//                            val selectedShelf = options[which]
+//                            addBookToShelf(currentBook, selectedShelf)
+//                        }
+//                    }
+//                    builder.show()
+//                }
+//            }
+//        }
         btnAddToShelf.setOnClickListener {
             book?.let { currentBook ->
                 lifecycleScope.launch {
-                    // Get all existing shelves from Room
                     val shelves = db.shelfDAO().getAllShelves()
-                    val shelfNames = shelves.map { it.shelfName }.toMutableList()
-                    val options = arrayOf("Create New Shelf") + shelfNames
-                    val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                    builder.setTitle("Add to Shelf")
-                    builder.setItems(options) { dialog, which ->
-                        if (which == 0) {
-                            // Create new shelf
-                            val input = android.widget.EditText(requireContext())
-                            input.hint = "Enter shelf name"
+                    val shelfNames = shelves.map { it.shelfName }
 
-                            androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                                .setTitle("New Shelf")
-                                .setView(input)
-                                .setPositiveButton("Create") { innerDialog, _ ->
-                                    val shelfName = input.text.toString().trim()
-                                    if (shelfName.isNotEmpty()) {
-                                        addBookToShelf(currentBook, shelfName)
+                    // Check which shelves already contain this book
+                    val checkedItems = shelfNames.map { shelf ->
+                        val shelfData = db.shelfDAO().getShelfByName(shelf)
+                        shelfData?.bookIds?.contains(currentBook.key) == true
+                    }.toBooleanArray()
+
+                    val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    builder.setTitle("Add to Shelves")
+
+                    builder.setMultiChoiceItems(
+                        shelfNames.toTypedArray(),
+                        checkedItems
+                    ) { _, which, isChecked ->
+                        checkedItems[which] = isChecked
+                    }
+
+                    builder.setPositiveButton("Save") { _, _ ->
+                        lifecycleScope.launch {
+                            for (i in shelfNames.indices) {
+                                val shelfName = shelfNames[i]
+                                val isChecked = checkedItems[i]
+                                val shelf = shelves[i]
+
+                                if (isChecked) {
+                                    if (!shelf.bookIds.contains(currentBook.key)) {
+                                        db.shelfDAO().addBookIdToShelf(shelfName, currentBook.key)
+                                        SyncManager.addBookIdToShelf(shelfName, currentBook.key)
                                     }
-                                    innerDialog.dismiss()
+                                } else {
+                                    if (shelf.bookIds.contains(currentBook.key)) {
+                                        db.shelfDAO().removeBookIdFromShelf(shelfName, currentBook.key)
+                                        SyncManager.removeBookIdFromShelf(shelfName, currentBook.key)
+                                    }
                                 }
-                                .setNegativeButton("Cancel") { innerDialog, _ -> innerDialog.cancel() }
-                                .show()
-                        } else {
-                            // Existing shelf selected
-                            val selectedShelf = options[which]
-                            addBookToShelf(currentBook, selectedShelf)
+                            }
+
+                            Toast.makeText(
+                                requireContext(),
+                                "Shelf selections updated!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
+
+                    builder.setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+
+                    builder.setNeutralButton("Create New Shelf") { _, _ ->
+                        showCreateShelfDialog(currentBook)
+                    }
+
                     builder.show()
                 }
             }
         }
+
         btnSave.setOnClickListener {
             book?.let { currentBook ->
                 lifecycleScope.launch {
@@ -184,5 +246,30 @@ class BookToolbarFragment : Fragment() {
             Toast.makeText(requireContext(), "Added to $shelfName", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun showCreateShelfDialog(book: Book) {
+        val input = android.widget.EditText(requireContext())
+        input.hint = "Enter shelf name"
 
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("New Shelf")
+            .setView(input)
+            .setPositiveButton("Create") { dialog, _ ->
+                val shelfName = input.text.toString().trim()
+                if (shelfName.isNotEmpty()) {
+                    lifecycleScope.launch {
+                        val newShelf = Shelf(shelfName, listOf(book.key))
+                        db.shelfDAO().insertShelf(newShelf)
+                        SyncManager.addShelfToFirebase(newShelf)
+                        SyncManager.addBookIdToShelf(shelfName, book.key)
+
+                        Toast.makeText(requireContext(), "Shelf '$shelfName' created!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+            .show()
     }
+
+
+}

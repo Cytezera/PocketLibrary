@@ -12,9 +12,11 @@ import com.example.pocketlibrary.Shelf
 @Dao
 interface ShelfDAO {
 
+    //create new shelf
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShelf(shelf: Shelf)
 
+    //
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(shelves: List<Shelf>)
 
@@ -30,13 +32,17 @@ interface ShelfDAO {
     suspend fun getAllShelves(): List<Shelf>
 
 
-
+// get shelf name
     @Query("SELECT * FROM shelves ORDER BY shelf_name ASC")
     fun getAllShelvesCategory(): LiveData<List<Shelf>>
 
-
+//delete shelves
     @Query("DELETE FROM shelves WHERE shelf_name = :shelfName")
     suspend fun deleteShelf(shelfName: String)
+
+    // get SHELF object from its name
+    @Query("SELECT * FROM shelves WHERE shelf_name = :shelfName LIMIT 1")
+    suspend fun getShelfByName(shelfName: String): Shelf?
 
     // Helper to add a book ID to a shelf
     suspend fun addBookIdToShelf(shelfName: String, bookId: String) {
@@ -45,6 +51,14 @@ interface ShelfDAO {
             insertShelf(Shelf(shelfName, listOf(bookId)))
         } else {
             val updatedBookIds = shelf.bookIds + bookId
+            updateShelf(shelf.copy(bookIds = updatedBookIds))
+        }
+    }
+
+    suspend fun removeBookIdFromShelf(shelfName:String, bookId:String){
+        val shelf = getShelf(shelfName)
+        if (shelf != null){
+            val updatedBookIds = shelf.bookIds - bookId
             updateShelf(shelf.copy(bookIds = updatedBookIds))
         }
     }

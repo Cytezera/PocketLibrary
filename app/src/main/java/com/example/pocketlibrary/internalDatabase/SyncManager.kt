@@ -172,5 +172,22 @@ object SyncManager {
         }
     }
 
+    suspend fun removeBookIdFromShelf(shelfName: String, bookKey: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                if (shelfName.isBlank() || bookKey.isBlank()) return@withContext
+
+                firestore.collection("shelves")
+                    .document(shelfName)
+                    .update("bookIds", com.google.firebase.firestore.FieldValue.arrayRemove(bookKey))
+                    .await()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 
 }
