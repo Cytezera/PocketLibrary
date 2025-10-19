@@ -19,7 +19,6 @@ import com.example.pocketlibrary.search.BookListAdapter
 
 class HomeBodyFragment : Fragment() {
 
-
     private lateinit var adapter: HomeBookAdapter
 
     override fun onCreateView(
@@ -35,8 +34,6 @@ class HomeBodyFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         val bookDao = db.bookDao()
 
-
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerRecent)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -47,9 +44,5 @@ class HomeBodyFragment : Fragment() {
             val favourites = books.filter { it.isFavourite }
             adapter.updateList(favourites)
         }
-
     }
-
-
-
 }

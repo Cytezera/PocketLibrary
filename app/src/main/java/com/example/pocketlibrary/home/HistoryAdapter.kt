@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentManager
 import com.example.pocketlibrary.BookFragment
 import com.example.pocketlibrary.BookToolbarFragment
 
-
 class HistoryAdapter(
     private var books : List<Book>,
     private val context : Context,
@@ -24,7 +23,6 @@ class HistoryAdapter(
 ): RecyclerView.Adapter<HistoryAdapter.BookViewHolder>(){
     class BookViewHolder(view:View) : RecyclerView.ViewHolder(view){
         val bookImage : ImageView = view.findViewById(R.id.bookImage)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -35,9 +33,7 @@ class HistoryAdapter(
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
 
-
         val book = books[position]
-
 
         if (!book.coverUri.isNullOrEmpty()) {
             Glide.with(context)
@@ -53,16 +49,13 @@ class HistoryAdapter(
                 .placeholder(R.drawable.ic_placeholder)
                 .error(R.drawable.ic_placeholder)
                 .into(holder.bookImage)
-
         } else {
             holder.bookImage.setImageResource(R.drawable.ic_placeholder)
         }
 
-
         holder.itemView.setOnClickListener{
             val fragment = BookFragment.newInstance(book)
             val fragment2 = BookToolbarFragment.newInstance(book)
-
 
             fragmentManager.beginTransaction()
                 .replace(R.id.home_toolbar_container, fragment2)
@@ -70,7 +63,6 @@ class HistoryAdapter(
                 .replace(R.id.home_book_container, fragment)
                 .addToBackStack(null)
                 .commit()
-
         }
     }
 

@@ -26,6 +26,4 @@
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         android:scrollbars="horizontal" />
-
-
 </LinearLayout>

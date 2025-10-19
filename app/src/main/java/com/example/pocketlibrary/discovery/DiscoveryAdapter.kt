@@ -1,6 +1,5 @@
 package com.example.pocketlibrary.discovery
 
-
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

@@ -15,19 +15,13 @@ import com.example.pocketlibrary.internalDatabase.AppDatabase
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
-
-
 class SavedBookFragment : Fragment() {
 
     private lateinit var viewModel: SavedBookViewModel
     private lateinit var adapter: SavedBookAdapter
     private var isFavouriteFlag: Boolean = false
-
     private var shelfName: String? = null
-
     private lateinit var db: AppDatabase
-
-
 
     //receiving the data
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,16 +63,9 @@ class SavedBookFragment : Fragment() {
                     //just in case
                     books
                 }
-
                 adapter.updateList(filteredBooks)
             }
         }
-
-
-
-
-
-
 
         //to search offline
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

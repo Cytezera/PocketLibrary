@@ -1,6 +1,5 @@
 package com.example.pocketlibrary
 
-
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -14,9 +13,6 @@ import com.example.pocketlibrary.internalDatabase.BookDAO
 import com.example.pocketlibrary.internalDatabase.AppDatabase
 import kotlinx.coroutines.launch
 import com.example.pocketlibrary.internalDatabase.SyncManager
-
-
-
 
 class BookToolbarFragment : Fragment() {
 
@@ -79,42 +75,6 @@ class BookToolbarFragment : Fragment() {
             }
         }
 
-//        btnAddToShelf.setOnClickListener {
-//            book?.let { currentBook ->
-//                lifecycleScope.launch {
-//                    // Get all existing shelves from Room
-//                    val shelves = db.shelfDAO().getAllShelves()
-//                    val shelfNames = shelves.map { it.shelfName }.toMutableList()
-//                    val options = arrayOf("Create New Shelf") + shelfNames
-//                    val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-//                    builder.setTitle("Add to Shelf")
-//                    builder.setItems(options) { dialog, which ->
-//                        if (which == 0) {
-//                            // Create new shelf
-//                            val input = android.widget.EditText(requireContext())
-//                            input.hint = "Enter shelf name"
-//
-//                            androidx.appcompat.app.AlertDialog.Builder(requireContext())
-//                                .setTitle("New Shelf")
-//                                .setView(input)
-//                                .setPositiveButton("Create") { innerDialog, _ ->
-//                                    val shelfName = input.text.toString().trim()
-//                                    if (shelfName.isNotEmpty()) {
-//                                        addBookToShelf(currentBook, shelfName)
-//                                    }
-//                                    innerDialog.dismiss()
-//                                }
-//                                .setNegativeButton("Cancel") { innerDialog, _ -> innerDialog.cancel() }
-//                                .show()
-//                        } else {
-//                            val selectedShelf = options[which]
-//                            addBookToShelf(currentBook, selectedShelf)
-//                        }
-//                    }
-//                    builder.show()
-//                }
-//            }
-//        }
         btnAddToShelf.setOnClickListener {
             book?.let { currentBook ->
                 lifecycleScope.launch {
@@ -209,8 +169,6 @@ class BookToolbarFragment : Fragment() {
             }
         }
 
-
-
         btnShare.setOnClickListener {
             book?.let { currentBook ->
                 val shareIntent = android.content.Intent().apply {
@@ -279,6 +237,4 @@ class BookToolbarFragment : Fragment() {
             .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
             .show()
     }
-
-
 }

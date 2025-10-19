@@ -61,6 +61,5 @@
             android:text="Save Book"
             android:textColor="#5C4033"
             android:backgroundTint="#D2B48C" />
-
     </LinearLayout>
 </ScrollView>

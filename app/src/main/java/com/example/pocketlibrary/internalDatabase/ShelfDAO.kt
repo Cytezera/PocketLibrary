@@ -16,7 +16,6 @@ interface ShelfDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShelf(shelf: Shelf)
 
-    //
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(shelves: List<Shelf>)
 
@@ -31,20 +30,17 @@ interface ShelfDAO {
     @Query("SELECT * FROM shelves")
     suspend fun getAllShelves(): List<Shelf>
 
-
-// get shelf name
+    // get shelf name
     @Query("SELECT * FROM shelves ORDER BY shelf_name ASC")
     fun getAllShelvesCategory(): LiveData<List<Shelf>>
 
-//delete shelves
+    //delete shelves
     @Query("DELETE FROM shelves WHERE shelf_name = :shelfName")
     suspend fun deleteShelf(shelfName: String)
 
     // get SHELF object from its name
     @Query("SELECT * FROM shelves WHERE shelf_name = :shelfName LIMIT 1")
     suspend fun getShelfByName(shelfName: String): Shelf?
-
-
 
     // Helper to add a book ID to a shelf
     suspend fun addBookIdToShelf(shelfName: String, bookId: String) {

@@ -17,6 +17,4 @@ data class History(
 
     @ColumnInfo(name = "viewed_at")
     val viewedAt: Long = System.currentTimeMillis()
-
-
 ) : Parcelable

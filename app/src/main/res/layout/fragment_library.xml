@@ -28,8 +28,6 @@
         android:layout_marginTop="24dp"
         android:divider="?android:attr/dividerVertical" >
 
-
-
         <Button
             android:id="@+id/favourite_button"
             android:layout_width="200dp"
@@ -47,7 +45,5 @@
             android:layout_marginTop="16dp"
             android:overScrollMode="never"
             tools:listitem="@layout/item_shelves_button" />
-
-
     </LinearLayout>
 </LinearLayout>

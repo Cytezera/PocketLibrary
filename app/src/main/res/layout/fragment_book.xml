@@ -47,6 +47,5 @@
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
             android:gravity="center" />
-
     </LinearLayout>
 </ScrollView>

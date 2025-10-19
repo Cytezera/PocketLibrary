@@ -89,12 +89,6 @@ class SavedBookAdapter (
                         .addToBackStack(null)
                         .commit()
                 }
-
-                /*activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.category_container, fragment)
-                    .replace(R.id.toolbar_container, toolbarFragment)
-                    .addToBackStack(null)
-                    .commit()*/
             }
         }
     }

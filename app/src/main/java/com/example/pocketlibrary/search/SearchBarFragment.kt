@@ -15,16 +15,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
-
-
 class SearchBarFragment : Fragment() {
 
     private val bookViewModel: BookViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -32,7 +28,6 @@ class SearchBarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_search_bar, container, false)
-
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,9 +60,4 @@ class SearchBarFragment : Fragment() {
             }
         }
     }
-
-
-
-
-
 }
