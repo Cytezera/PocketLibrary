@@ -3,7 +3,6 @@ package com.example.pocketlibrary.internalDatabase
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.pocketlibrary.Book
-
 @Dao
 interface BookDAO {
 
@@ -46,5 +45,4 @@ interface BookDAO {
 
     @Query("SELECT * FROM books WHERE book_key = :bookKey LIMIT 1")
     suspend fun getBookByKey(bookKey: String): Book?
-
 }

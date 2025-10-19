@@ -13,55 +13,8 @@ import android.util.Log
 import com.example.pocketlibrary.Shelf
 import com.google.firebase.firestore.SetOptions
 
-
 object SyncManager {
-
     private val firestore = FirebaseFirestore.getInstance()
-
-//    suspend fun syncWithFirebase(context: Context) {
-//        Log.d("SyncManager", "Works here cuh")
-//        if (!isOnline(context)) return
-//        val db = AppDatabase.getDatabase(context)
-//        val bookDao = db.bookDao()
-//        val shelfDao = db.shelfDAO()
-//
-//        withContext(Dispatchers.IO) {
-//            try {
-//                Log.d("SyncManager", "Works here too cuh")
-//
-//                val snapshot = firestore.collection("books").get().await()
-//                val books = snapshot.toObjects(Book::class.java)
-//
-//
-//                for (book in books) {
-//                    Log.d("SyncManager", "Book from Firebase: $book")
-//                }
-//
-//                val shelfSnapshot = firestore.collection("shelves").get().await()
-//                val shelves = shelfSnapshot.toObjects(Shelf::class.java)
-//
-//
-//                for (book in books) {
-//                    Log.d("SyncManager", "Book from Firebase: $book")
-//                }
-//
-//                for (shelf in shelves){
-//                    Log.d("SyncManager", "Book from Firebase: $shelf")
-//
-//                }
-//
-//                shelfDao.deleteAll()
-//                shelfDao.insertAll(shelves)
-//
-//
-//                bookDao.deleteAll()
-//                bookDao.insertAll(books)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-
     suspend fun syncWithFirebase(context: Context) {
         Log.d("SyncManager", "Works here cuh")
         if (!isOnline(context)) return
@@ -76,18 +29,11 @@ object SyncManager {
                 val snapshot = firestore.collection("books").get().await()
                 val books = snapshot.toObjects(Book::class.java)
 
-
-
                 val shelfSnapshot = firestore.collection("shelves").get().await()
                 val shelves = shelfSnapshot.toObjects(Shelf::class.java)
 
-
-
-
                 shelfDao.deleteAll()
                 shelfDao.insertAll(shelves)
-
-
 
                 for (book in books) {
                     val exists = bookDao.countBookByKey(book.key) > 0
@@ -100,7 +46,6 @@ object SyncManager {
             }
         }
     }
-
 
     suspend fun addBookToFirebase(book: Book) {
         withContext(Dispatchers.IO) {
@@ -119,9 +64,6 @@ object SyncManager {
         }
     }
 
-
-
-
     suspend fun removeBookFromFirebase(bookKey: String) {
         try {
             firestore.collection("books").document(bookKey)
@@ -132,7 +74,6 @@ object SyncManager {
             Log.e("SyncManager", "❌ Remove failed", e)
         }
     }
-
 
     private fun isOnline(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -188,7 +129,4 @@ object SyncManager {
             }
         }
     }
-
-
-
 }

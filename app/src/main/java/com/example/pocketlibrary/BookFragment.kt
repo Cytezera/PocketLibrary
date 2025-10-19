@@ -13,8 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import android.widget.Toast
 
-
-
 class BookFragment : Fragment() {
     private var book: Book? = null
     companion object {
@@ -78,8 +76,6 @@ class BookFragment : Fragment() {
             lifecycleScope.launch {
                 val db = AppDatabase.getDatabase(requireContext())
 
-
-
                 val exists = db.bookDao().countBookByKey(b.key) > 0
 
                 if (!exists){
@@ -90,10 +86,6 @@ class BookFragment : Fragment() {
                 db.historyDao().deleteByBookId(b.key)
                 db.historyDao().insert(History(bookId = b.key))
             }
-
-
         }
     }
-
-
 }

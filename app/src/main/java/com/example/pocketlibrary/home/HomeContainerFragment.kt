@@ -24,6 +24,4 @@ class HomeContainerFragment : Fragment() {
             .replace(R.id.home_book_container, HomeBodyFragment())
             .commit()
     }
-
-
 }

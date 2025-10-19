@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 
 import android.util.Log
 
-
 class HomeToolbarFragment : Fragment() {
     private lateinit var adapter: HistoryAdapter
 
@@ -32,15 +31,12 @@ class HomeToolbarFragment : Fragment() {
         val db = AppDatabase.getDatabase(requireContext())
         val bookDao = db.bookDao()
 
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerHistory)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         adapter = HistoryAdapter(emptyList(), requireContext(), parentFragmentManager)
         recyclerView.adapter = adapter
-
-
 
         lifecycleScope.launch {
             val history = db.historyDao().getLatestHistory(12)
@@ -52,7 +48,5 @@ class HomeToolbarFragment : Fragment() {
 
             adapter.updateList(books)
         }
-
     }
-
 }

@@ -1,4 +1,3 @@
-
 package com.example.pocketlibrary.home
 
 import android.content.Context
@@ -15,7 +14,6 @@ import com.example.pocketlibrary.R
 import androidx.fragment.app.FragmentManager
 import com.example.pocketlibrary.BookFragment
 import com.example.pocketlibrary.BookToolbarFragment
-
 
 class HomeBookAdapter(
     private var books : List<Book>,
@@ -36,7 +34,6 @@ class HomeBookAdapter(
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-
 
         val book = books[position]
 
@@ -61,13 +58,11 @@ class HomeBookAdapter(
             holder.bookImage.setImageResource(R.drawable.ic_placeholder)
         }
 
-
         holder.bookAuthor.text = book.author.joinToString(", ")
 
         holder.itemView.setOnClickListener{
             val fragment = BookFragment.newInstance(book)
             val fragment2 = BookToolbarFragment.newInstance(book)
-
 
             fragmentManager.beginTransaction()
                 .replace(R.id.home_toolbar_container, fragment2)
@@ -75,7 +70,6 @@ class HomeBookAdapter(
                 .replace(R.id.home_book_container, fragment)
                 .addToBackStack(null)
                 .commit()
-
         }
     }
 

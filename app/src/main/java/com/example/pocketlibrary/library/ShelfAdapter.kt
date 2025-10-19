@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.content.Context
 
-
 class ShelfAdapter(
     private val fragmentManager: FragmentManager,
     private val context: Context

@@ -72,8 +72,6 @@ class LibraryFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-
-
         return view
     }
 }

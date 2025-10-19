@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
 
-
-
 data class UiState(
     val query: String = "",
     val loading: Boolean = false,
@@ -70,4 +68,3 @@ class BookViewModel : ViewModel(){
         }
     }
 }
-

@@ -86,7 +86,6 @@ class CreateFragment : Fragment() {
             "${context.packageName}.provider",
             photoFile
         )
-
         takePhotoLauncher.launch(photoUri)
     }
 
@@ -127,7 +126,6 @@ class CreateFragment : Fragment() {
             db.shelfDAO().addBookIdToShelf("local",book.key)
             SyncManager.addBookIdToShelf("local", book.key)
         }
-
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
         clearForm()
