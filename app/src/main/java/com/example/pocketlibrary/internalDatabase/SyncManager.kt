@@ -11,12 +11,12 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import android.util.Log
 import com.example.pocketlibrary.Shelf
+
 import com.google.firebase.firestore.SetOptions
 
 object SyncManager {
     private val firestore = FirebaseFirestore.getInstance()
     suspend fun syncWithFirebase(context: Context) {
-        Log.d("SyncManager", "Works here cuh")
         if (!isOnline(context)) return
         val db = AppDatabase.getDatabase(context)
         val bookDao = db.bookDao()
@@ -24,16 +24,58 @@ object SyncManager {
 
         withContext(Dispatchers.IO) {
             try {
+
+                val shelfSnapshot = firestore.collection("shelves").get().await()
+                val firebaseShelves = shelfSnapshot.toObjects(Shelf::class.java)
+                val localShelves = shelfDao.getAllShelves()
+
+                for (localShelf in localShelves) {
+                    val existsInFirebase = firebaseShelves.any { it.shelfName == localShelf.shelfName }
+                    if (!existsInFirebase) {
+                        try {
+                            addShelfToFirebase(localShelf)
+                        } catch (e: Exception) {
+                            Log.e("SyncManager", "Failed to push shelf ${localShelf.shelfName} to Firebase", e)
+                        }
+                    }
+                }
+
+                for (remoteShelf in firebaseShelves) {
+                    val existsLocally = localShelves.any { it.shelfName == remoteShelf.shelfName }
+                    if (!existsLocally) {
+                        try {
+                            shelfDao.insertShelf(remoteShelf)
+                        } catch (e: Exception) {
+                            Log.e("SyncManager", "Failed to insert shelf ${remoteShelf.shelfName} locally", e)
+                        }
+                    }
+                }
+
+                // This part ho is for yk when you save a book offline but you want it to sync w fb (firebase) not facebook
+                val shelf = db.shelfDAO().getShelfByName("local")
+                val booksInShelf = shelf?.bookIds?.mapNotNull { bookId ->
+                    db.bookDao().getBookByKey(bookId)
+                }?: emptyList()
+
+                for (book in booksInShelf) {
+
+                    try {
+                        Log.e("SyncManager","Local sync fine eh ")
+
+                        addBookToFirebase(book)
+                        addBookIdToShelf("local",book.key)
+                    } catch (e: Exception) {
+                        Log.e("SyncManager","Ma gai gui got error liao bro , tho i doubt this error would happen ahhahahahahahahhaa")
+                    }
+                }
+
+
                 Log.d("SyncManager", "Works here too cuh")
 
                 val snapshot = firestore.collection("books").get().await()
                 val books = snapshot.toObjects(Book::class.java)
 
-                val shelfSnapshot = firestore.collection("shelves").get().await()
-                val shelves = shelfSnapshot.toObjects(Shelf::class.java)
 
-                shelfDao.deleteAll()
-                shelfDao.insertAll(shelves)
 
                 for (book in books) {
                     val exists = bookDao.countBookByKey(book.key) > 0
@@ -41,6 +83,8 @@ object SyncManager {
                         bookDao.insert(book)
                     }
                 }
+
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
