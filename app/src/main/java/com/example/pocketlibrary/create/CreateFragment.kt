@@ -114,17 +114,34 @@ class CreateFragment : Fragment() {
         )
 
         val db = AppDatabase.getDatabase(requireContext())
+
+
         lifecycleScope.launch(Dispatchers.IO) {
+
+
             db.bookDao().insert(book)
-            SyncManager.addBookToFirebase(book)
             val shelves = db.shelfDAO().getAllShelves()
             val localExists = shelves.any { it.shelfName == "local" }
             if (!localExists) {
                 db.shelfDAO().insertShelf(Shelf("local", emptyList()))
-                SyncManager.addShelfToFirebase(Shelf("local",emptyList()))
             }
             db.shelfDAO().addBookIdToShelf("local",book.key)
-            SyncManager.addBookIdToShelf("local", book.key)
+
+            try {
+                SyncManager.addBookToFirebase(book)
+                if (!localExists) {
+                    SyncManager.addShelfToFirebase(Shelf("local", emptyList()))
+                }
+                SyncManager.addBookIdToShelf("local", book.key)
+            }catch (e: Exception) {
+                launch(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Book saved locally. Will sync when online.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
 
         Toast.makeText(requireContext(), "Book added!", Toast.LENGTH_SHORT).show()
