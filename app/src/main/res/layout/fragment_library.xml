@@ -21,22 +21,62 @@
         android:textColor="#5C4033"/>
 
     <LinearLayout
+        android:id="@+id/likeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
         android:layout_marginTop="24dp"
+        android:clickable="true"
         android:divider="?android:attr/dividerVertical" >
 
-        <Button
-            android:id="@+id/favourite_button"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#C19A6B"
-            android:text="Favourites"
-            android:textColor="#FAF3E0"
-            android:layout_marginVertical="8dp"
-            android:paddingVertical="8dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginVertical="6dp"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageCategory"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:contentDescription="Book cover"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_like" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/textCategoryName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fiction"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/textBookCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12 books"
+                    android:textSize="14sp"
+                    android:textColor="#666"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/shelfRecyclerView"
@@ -44,6 +84,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:overScrollMode="never"
-            tools:listitem="@layout/item_shelves_button" />
+            tools:listitem="@layout/item_category" />
+
+
     </LinearLayout>
 </LinearLayout>

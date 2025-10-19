@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pocketlibrary.BookFragment
+import android.widget.LinearLayout
 import com.example.pocketlibrary.BookToolbarFragment
 import com.example.pocketlibrary.R
 import com.example.pocketlibrary.Shelf
@@ -26,13 +28,31 @@ class LibraryFragment : Fragment() {
         // Inflate layout
         val view = inflater.inflate(R.layout.fragment_library, container, false)
 
-        val favouriteButton = view.findViewById<Button>(R.id.favourite_button)
-
+        val categoryName: TextView = view.findViewById(R.id.textCategoryName)
+        val bookCount: TextView = view.findViewById(R.id.textBookCount)
         val shelfRecyclerView = view.findViewById<RecyclerView>(R.id.shelfRecyclerView)
+        val likeLayout = view.findViewById<LinearLayout>(R.id.likeLayout)
+
+
+        val bookDao = AppDatabase.getDatabase(requireContext()).bookDao()
+
+
+        categoryName.text = "Saved books"
+        bookDao.getAllBooks().observe(viewLifecycleOwner) { books ->
+            val favouriteCount = books.count { it.isFavourite }
+            bookCount.text = "$favouriteCount books"
+        }
+
+
+
+
 
         shelfAdapter = ShelfAdapter(parentFragmentManager,requireContext())
         shelfRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         shelfRecyclerView.adapter = shelfAdapter
+
+
+
 
         val shelfDAO = AppDatabase.getDatabase(requireContext()).shelfDAO()
         shelfDAO.getAllShelvesCategory().observe(viewLifecycleOwner) { shelves ->
@@ -40,7 +60,7 @@ class LibraryFragment : Fragment() {
         }
 
         //change to SavedBookFragment
-        favouriteButton.setOnClickListener {
+        likeLayout.setOnClickListener {
             val fragment = SavedBookFragment()
             //pass data
             val bundle = Bundle()
